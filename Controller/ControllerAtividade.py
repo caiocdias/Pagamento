@@ -7,7 +7,7 @@ class ControllerAtividade:
     def __init__(self, lista_atividades: list):
         self.lista_atividades = lista_atividades
 
-    def cadastrar_atividade(self):
+    def cadastrar(self):
         try:
             acao = input("\nDigite a ação da atividade: ")
             origens = ["AcoesConcGmax", "AcoesConcSap"]
@@ -26,12 +26,12 @@ class ControllerAtividade:
         except Exception as e:
             return f"\nErro ao criar atividade. {str(e)}"
 
-    def remover_atividade(self):
+    def remover(self):
         try:
             if len(self.lista_atividades) == 0:
                 raise Exception("Não há ativiades cadastradas.")
 
-            atividade_selecionada = self.listar_atividades("Selecionae a atividade para remover", choose_flag=True)
+            atividade_selecionada = self.listar("Selecionae a atividade para remover", choose_flag=True)
 
             if atividade_selecionada is None:
                 return "Nenhuma atividade foi removida."
@@ -46,12 +46,12 @@ class ControllerAtividade:
         except Exception as e:
             return f"\nErro ao remover atividade. {str(e)}"
 
-    def alterar_atividade(self):
+    def alterar(self):
         try:
             if len(self.lista_atividades) == 0:
                 raise Exception("Não há atividades cadastradas.")
 
-            atividade_selecionada = self.listar_atividades("Selecione a atividade para alterar", choose_flag=True)
+            atividade_selecionada = self.listar("Selecione a atividade para alterar", choose_flag=True)
 
             if atividade_selecionada is None:
                 return "Nenhuma atividade foi alterada."
@@ -89,7 +89,7 @@ class ControllerAtividade:
         except Exception as e:
             return f"\nErro ao alterar atividade. {str(e)}"
 
-    def listar_atividades(self, title: str, choose_flag: bool = False):
+    def listar(self, title: str, choose_flag: bool = False):
         menu = MenuSimples(title, [str(atv) for atv in self.lista_atividades])
         if choose_flag:
             return menu.choose(include_exit=True)
@@ -97,13 +97,13 @@ class ControllerAtividade:
         menu.show(include_exit=False)
         return None
 
-    def salvar_lista(self):
-        path = "..\\compressed_data\\listaAtividades.pkl"
+    def salvar(self):
+        path = "..\\compressed_data\\lista_atividades.pkl"
         with open(path, 'wb') as file:
             pickle.dump(self.lista_atividades, file)
 
-    def carregar_lista(self):
-        path = "..\\compressed_data\\listaAtividades.pkl"
+    def carregar(self):
+        path = "..\\compressed_data\\lista_atividades.pkl"
         with open(path, 'rb') as file:
             self.lista_atividades = pickle.load(file)
 
@@ -112,12 +112,12 @@ if __name__ == "__main__":
     atividades = []
     controladora = ControllerAtividade(atividades)
 
-    print(controladora.cadastrar_atividade())
+    print(controladora.cadastrar())
     input()
-    print(controladora.cadastrar_atividade())
+    print(controladora.cadastrar())
     input()
-    controladora.listar_atividades("Atividades Cadastradas", choose_flag=False)
+    controladora.listar("Atividades Cadastradas", choose_flag=False)
     while True:
-        print(controladora.alterar_atividade())
+        print(controladora.alterar())
         input()
-        controladora.listar_atividades("Atividades Cadastradas", choose_flag=False)
+        controladora.listar("Atividades Cadastradas", choose_flag=False)
