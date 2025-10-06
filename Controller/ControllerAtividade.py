@@ -1,4 +1,5 @@
-﻿import pickle
+﻿import os.path
+import pickle
 from Model import Atividade
 from View import MenuSimples
 from Generic import Utils
@@ -6,6 +7,10 @@ from Generic import Utils
 class ControllerAtividade:
     def __init__(self, lista_atividades: list):
         self.lista_atividades = lista_atividades
+
+    def menu_principal(self):
+        opcoes = ["Cadastrar Atividade", "Remover Atividade", "Alterar Atividade"]
+        return MenuSimples("Menu de Gerenciamento de Atividades", opcoes).choose(include_exit=True)
 
     def cadastrar(self):
         try:
@@ -98,14 +103,24 @@ class ControllerAtividade:
         return None
 
     def salvar(self):
-        path = "..\\compressed_data\\lista_atividades.pkl"
-        with open(path, 'wb') as file:
-            pickle.dump(self.lista_atividades, file)
+        try:
+            path = ".\\compressed_data\\lista_atividades.pkl"
+            with open(path, 'wb') as file:
+                pickle.dump(self.lista_atividades, file)
+            return "Arquivo de atividades salvo com sucesso."
+        except Exception as e:
+            return f"Erro ao savar o arquivo de atividades. {str(e)}"
 
     def carregar(self):
-        path = "..\\compressed_data\\lista_atividades.pkl"
-        with open(path, 'rb') as file:
-            self.lista_atividades = pickle.load(file)
+        try:
+            if os.path.isfile(".\\compressed_data\\lista_atividades.pkl"):
+                path = ".\\compressed_data\\lista_atividades.pkl"
+                with open(path, 'rb') as file:
+                    self.lista_atividades = pickle.load(file)
+                return "Arquivo de atividades carregado com sucesso."
+            raise FileNotFoundError("O arquivo não existe.")
+        except Exception as e:
+            return f"Erro ao carregar o arquivo de atividades. {str(e)}"
 
 if __name__ == "__main__":
 

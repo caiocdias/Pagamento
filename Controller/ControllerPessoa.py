@@ -1,4 +1,5 @@
-﻿import pickle
+﻿import os.path
+import pickle
 from math import trunc
 
 from Model import Pessoa
@@ -9,6 +10,10 @@ class ControllerPessoa:
     def __init__(self, lista_pessoas: list, lista_atividades: list):
         self.lista_pessoas = lista_pessoas
         self.lista_atividades = lista_atividades
+
+    def menu_principal(self):
+        opcoes = ["Cadastrar Pessoa", "Remover Pessoa", "Alterar Pessoa"]
+        return MenuSimples("Menu de Gerenciamento de Pessoas", opcoes).choose(include_exit=True)
 
     def cadastrar(self):
         try:
@@ -97,21 +102,31 @@ class ControllerPessoa:
             return f"\nErro ao alterar pessoa. {str(e)}"
 
     def listar(self, title: str, choose_flag: bool = False):
-        menu = MenuSimples(title, [str(atv) for atv in self.lista_pessoas])
+        menu = MenuSimples(title, [str(pessoa) for pessoa in self.lista_pessoas])
         if choose_flag:
             return menu.choose(include_exit=True)
 
         menu.show(include_exit=False)
         return None
-    def salvar_lista(self):
-        path = "..\\compressed_data\\lista_pessoas.pkl"
-        with open(path, 'wb') as file:
-            pickle.dump(self.lista_pessoas, file)
+    def salvar(self):
+        try:
+            path = ".\\compressed_data\\lista_pessoas.pkl"
+            with open(path, 'wb') as file:
+                pickle.dump(self.lista_pessoas, file)
+            return "Arquivo de pessoas salvo sucesso."
+        except Exception as e:
+            return f"Erro ao salvar o arquivo de pessoas. {str(e)}"
 
-    def carregar_lista(self):
-        path = "..\\compressed_data\\lista_pessoas.pkl"
-        with open(path, 'rb') as file:
-            self.lista_pessoas = pickle.load(file)
+    def carregar(self):
+        try:
+            if os.path.isfile(".\\compressed_data\\lista_pessoas.pkl"):
+                path = ".\\compressed_data\\lista_pessoas.pkl"
+                with open(path, 'rb') as file:
+                    self.lista_pessoas = pickle.load(file)
+                return "Arquivo de pessoas carregado com sucesso"
+            raise FileNotFoundError("O arquivo não existe.")
+        except Exception as e:
+            return f"Erro ao carregar o arquivo de pessoas. {str(e)}"
 
     def _alterar_atividade(self, pessoa_selecionada):
         while True:
