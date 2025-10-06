@@ -1,5 +1,6 @@
 ﻿import sys
 from Controller import ControllerAtividade, ControllerPessoa
+from Controller.ControllerAcoesConcGmax import ControllerAcoesConcGmax
 from View import MenuSimples
 
 
@@ -16,7 +17,7 @@ print(controller_pessoas.carregar())
 
 while True:
     try:
-        opcoes = ["Menu de Atividades", "Menu de Pessoas", "Salvar e Sair", "Sair sem Salvar"]
+        opcoes = ["Menu de Atividades", "Menu de Pessoas", "Gerar Relação Gmax", "Salvar e Sair", "Sair sem Salvar"]
         opcao_selecionada = MenuSimples("Menu Principal", opcoes).choose(include_exit=False)
 
         match opcao_selecionada:
@@ -65,8 +66,12 @@ while True:
                             break
                         case _:
                             raise ValueError("Erro no atributo selecionado")
-
             case 2:
+                start_date = input("Entre com a data inicial: ")
+                end_date = input("Entre com a data final: ")
+                controller_acoes_conc_gmax = ControllerAcoesConcGmax(controller_pessoas.lista_pessoas, start_date, end_date)
+                print(controller_acoes_conc_gmax.gerar_producao())
+            case 3:
                 retorno_salvar_atividades = controller_atividades.salvar()
                 retorno_salvar_pessoas = controller_pessoas.salvar()
 
@@ -79,7 +84,7 @@ while True:
 
                 print("Não foi possível salvar e sair.")
 
-            case 3:
+            case 4:
                 input("\nObrigado por utilizar o programa.\nAutor: Caio Cezar Dias\nContato: caiocd007@gmail.com\n\nPressione ENTER para fechar.")
                 sys.exit()
             case _:
