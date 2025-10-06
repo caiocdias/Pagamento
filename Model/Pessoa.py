@@ -42,5 +42,5 @@ class Pessoa:
             if isinstance(a, Atividade)
         )
         return (
-            f"{self.nome}, {self.matricula}, {self.chave_pix}, {self.email} Atividades: [{atividades_fmt}]"
+            f"Nome: {self.nome}, Matrícula: {self.matricula}, Pix: {self.chave_pix}, Email: {self.email}, Atividades: [{atividades_fmt}]"
         )

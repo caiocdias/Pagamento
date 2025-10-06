@@ -157,9 +157,14 @@ class ControllerPessoa:
                         if self.lista_atividades[atividade_selecionada] in self.lista_pessoas[pessoa_selecionada].lista_atividades:
                             print("Este usuário já possui essa atividade.")
                             input()
-
-                        self.lista_pessoas[pessoa_selecionada].atribuir_atividade(self.lista_atividades[atividade_selecionada])
+                        else:
+                            self.lista_pessoas[pessoa_selecionada].atribuir_atividade(self.lista_atividades[atividade_selecionada])
+                            print("Atividade atribuída com sucesso.")
+                            input()
                 case 1:
+                    if len(self.lista_pessoas[pessoa_selecionada].lista_atividades) == 0:
+                        raise ValueError("Não há mais atividades cadastradas nesta pessoa.")
+                        break
                     while True:
                         atividade_para_remover = MenuSimples("Selecione a atividade para remover", [str(atv) for atv in self.lista_pessoas[pessoa_selecionada].lista_atividades]).choose(include_exit=False)
 
@@ -167,5 +172,6 @@ class ControllerPessoa:
                             break
 
                         self.lista_pessoas[pessoa_selecionada].remover_atividade(atividade_para_remover)
+                        print("Atividade removida com sucesso.")
                 case _:
                     raise ValueError("Erro no atributo selecionado")
