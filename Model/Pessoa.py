@@ -34,3 +34,13 @@ class Pessoa:
     def remover_atividade(self, index) -> bool:
         self.lista_atividades.pop(index)
         return True
+
+    def __str__(self):
+        atividades_fmt = " | ".join(
+            f"{a.acao} : {a.valor_unidade} p/ {a.unidade_pagamento}"
+            for a in self.lista_atividades
+            if isinstance(a, Atividade)
+        )
+        return (
+            f"{self.nome}, {self.matricula}, {self.chave_pix}, {self.email} Atividades: [{atividades_fmt}]"
+        )
