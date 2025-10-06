@@ -9,7 +9,7 @@ class ControllerAtividade:
         self.lista_atividades = lista_atividades
 
     def menu_principal(self):
-        opcoes = ["Cadastrar Atividade", "Remover Atividade", "Alterar Atividade"]
+        opcoes = ["Cadastrar Atividade", "Remover Atividade", "Alterar Atividade", "Listar Atividades"]
         return MenuSimples("Menu de Gerenciamento de Atividades", opcoes).choose(include_exit=True)
 
     def cadastrar(self):
@@ -95,6 +95,9 @@ class ControllerAtividade:
             return f"\nErro ao alterar atividade. {str(e)}"
 
     def listar(self, title: str, choose_flag: bool = False):
+        if len(self.lista_atividades) == 0:
+            raise Exception("Não há atividades cadastradas.")
+
         menu = MenuSimples(title, [str(atv) for atv in self.lista_atividades])
         if choose_flag:
             return menu.choose(include_exit=True)

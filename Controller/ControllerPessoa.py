@@ -12,7 +12,7 @@ class ControllerPessoa:
         self.lista_atividades = lista_atividades
 
     def menu_principal(self):
-        opcoes = ["Cadastrar Pessoa", "Remover Pessoa", "Alterar Pessoa"]
+        opcoes = ["Cadastrar Pessoa", "Remover Pessoa", "Alterar Pessoa", "Listar Pessoas"]
         return MenuSimples("Menu de Gerenciamento de Pessoas", opcoes).choose(include_exit=True)
 
     def cadastrar(self):
@@ -23,6 +23,7 @@ class ControllerPessoa:
             email = input("Digite o email: ")
 
             opcoes_atividade = [str(atv) for atv in self.lista_atividades]
+            print(opcoes_atividade)
             atividades = []
             while True:
                 opcao_selecionada = MenuSimples("Atividade para Atribuir", opcoes_atividade).choose(include_exit=True)
@@ -30,7 +31,11 @@ class ControllerPessoa:
                 if opcao_selecionada is None:
                     break
 
-                atividades.append(self.lista_atividades[opcao_selecionada])
+                if self.lista_atividades[opcao_selecionada] not in atividades:
+                    atividades.append(self.lista_atividades[opcao_selecionada])
+                else:
+                    print("Essa atividade já está na lista para cadastro.")
+                    input()
 
             pessoa = Pessoa(nome, matricula, chave_pix, email)
 
@@ -102,6 +107,9 @@ class ControllerPessoa:
             return f"\nErro ao alterar pessoa. {str(e)}"
 
     def listar(self, title: str, choose_flag: bool = False):
+        if len(self.lista_pessoas) == 0:
+            raise Exception("Não há pessoas cadastradas.")
+
         menu = MenuSimples(title, [str(pessoa) for pessoa in self.lista_pessoas])
         if choose_flag:
             return menu.choose(include_exit=True)
@@ -137,24 +145,24 @@ class ControllerPessoa:
                 return True
 
             opcoes_atividade = [str(atv) for atv in self.lista_atividades]
-            atividades_existentes = [str(atv) for atv in self.lista_pessoas[pessoa_selecionada].lista_atividades]
 
-            opcoes_disponiveis = [op for op in opcoes_atividade if op not in atividades_existentes]
             match opcao_selecionada:
                 case 0:
                     while True:
-                        atividade_selecionada = MenuSimples("Selecione a atividade", opcoes_disponiveis).choose(include_exit=True)
+                        atividade_selecionada = MenuSimples("Selecione a atividade", opcoes_atividade).choose(include_exit=True)
 
                         if atividade_selecionada is None:
                             break
 
                         if self.lista_atividades[atividade_selecionada] in self.lista_pessoas[pessoa_selecionada].lista_atividades:
                             print("Este usuário já possui essa atividade.")
+                            input()
 
                         self.lista_pessoas[pessoa_selecionada].atribuir_atividade(self.lista_atividades[atividade_selecionada])
                 case 1:
                     while True:
-                        atividade_para_remover = MenuSimples("Selecione a atividade para remover", [str(atv) for atv in self.lista_pessoas[pessoa_selecionada].lista_atividades])
+                        atividade_para_remover = MenuSimples("Selecione a atividade para remover", [str(atv) for atv in self.lista_pessoas[pessoa_selecionada].lista_atividades]).choose(include_exit=False)
+
                         if atividade_para_remover is None:
                             break
 

@@ -10,7 +10,7 @@ lista_pessoas = []
 controller_atividades = ControllerAtividade(lista_atividades)
 print(controller_atividades.carregar())
 
-controller_pessoas = ControllerPessoa(lista_pessoas, lista_atividades)
+controller_pessoas = ControllerPessoa(lista_pessoas, controller_atividades.lista_atividades)
 print(controller_pessoas.carregar())
 
 
@@ -33,6 +33,9 @@ while True:
                         case 2:
                             print(controller_atividades.alterar())
                             input()
+                        case 3:
+                            controller_atividades.listar("Atividades cadastradas", choose_flag=False)
+                            input()
                         case None:
                             print("Retornando ao menu principal.")
                             input()
@@ -53,6 +56,9 @@ while True:
                         case 2:
                             print(controller_pessoas.alterar())
                             input()
+                        case 3:
+                            controller_pessoas.listar("Pessoas cadastradas", choose_flag=False)
+                            input()
                         case None:
                             print("Retornando ao menu principal.")
                             input()
@@ -68,13 +74,13 @@ while True:
                 print(retorno_salvar_pessoas)
 
                 if retorno_salvar_atividades == "Arquivo de atividades salvo com sucesso." and retorno_salvar_pessoas == "Arquivo de pessoas salvo sucesso.":
-                    input("Obrigado por utilizar o programa.\nAutor: Caio Cezar Dias\nContato: caiocd007@gmail.com\n\nPressione ENTER para fechar.")
+                    input("\nObrigado por utilizar o programa.\nAutor: Caio Cezar Dias\nContato: caiocd007@gmail.com\n\nPressione ENTER para fechar.")
                     sys.exit()
 
                 print("Não foi possível salvar e sair.")
 
             case 3:
-                input("Obrigado por utilizar o programa.\nAutor: Caio Cezar Dias\nContato: caiocd007@gmail.com\n\nPressione ENTER para fechar.")
+                input("\nObrigado por utilizar o programa.\nAutor: Caio Cezar Dias\nContato: caiocd007@gmail.com\n\nPressione ENTER para fechar.")
                 sys.exit()
             case _:
                 input("A opções selecionada foi inválida")

@@ -10,6 +10,11 @@
         self.set_unidade_pagamento(unidade_pagamento)
         self.set_valor_unidade(valor_unidade)
 
+    def __eq__(self, other):
+        if not isinstance(other, Atividade):
+            return NotImplemented
+        return (self.acao, self.origem, self.unidade_pagamento, self.valor_unidade) == (other.acao, other.origem, other.unidade_pagamento, other.valor_unidade)
+
     def __str__(self):
         return f"{self.acao}, {self.origem} - {self.valor_unidade} por {self.unidade_pagamento}"
 
