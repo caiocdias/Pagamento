@@ -25,5 +25,5 @@
             if include_exit and n == 0:
                 return None
             if 1 <= n <= len(self.options):
-                return n - 1  # índice 0-based
+                return n - 1
             print(f"Escolha um número entre 1 e {len(self.options)}" + (" ou 0 para sair." if include_exit else "."))
