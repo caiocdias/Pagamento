@@ -23,7 +23,9 @@ class ControllerAtividade:
 
             valor_unidade = Utils.read_float("\nSelecione o valor pago por unidade: ")
 
-            atividade_criada = Atividade(acao, origens[origem_selecionada], unidades_pagamento[unidade_selecionada], valor_unidade)
+            coluna_referencia = input("Digite coluna de referência: ")
+
+            atividade_criada = Atividade(acao, origens[origem_selecionada], unidades_pagamento[unidade_selecionada], valor_unidade, coluna_referencia)
 
             self.lista_atividades.append(atividade_criada)
 
@@ -65,28 +67,27 @@ class ControllerAtividade:
             if confirmar != 'y':
                 return "Nenhuma atividade foi alterada."
 
-            opcoes = ["Alterar acao", "Alterar origem", "Alterar unidade de pagamento", "Alterar valor da unidade"]
+            opcoes = ["Alterar acao", "Alterar origem", "Alterar unidade de pagamento", "Alterar valor da unidade", "Alterar coluna de referência"]
             opcao_selecionada = MenuSimples("Selecione o atributo para alterar", opcoes).choose()
 
             match opcao_selecionada:
                 case 0:
                     acao = input("Nova acao: ")
                     self.lista_atividades[atividade_selecionada].set_acao(acao)
-                    pass
                 case 1:
                     origens = ["AcoesConcGmax", "AcoesConcSap"]
                     origem_selecionada = MenuSimples("Selecione a origem: ", origens).choose(include_exit=False)
                     self.lista_atividades[atividade_selecionada].set_origem(origens[origem_selecionada])
-                    pass
                 case 2:
                     unidades_pagamento = ["NS", "US"]
                     unidade_selecionada = MenuSimples("Seleciona a unidade de pagamento", unidades_pagamento).choose(include_exit=False)
                     self.lista_atividades[atividade_selecionada].set_unidade_pagamento(unidades_pagamento[unidade_selecionada])
-                    pass
                 case 3:
                     valor = float(input("Novo valor de unidade: "))
                     self.lista_atividades[atividade_selecionada].set_valor_unidade(valor)
-                    pass
+                case 4:
+                    referencia = input("Digite a nova coluna de referência: ")
+                    self.lista_atividades[atividade_selecionada].set_coluna_referencia(referencia)
                 case _:
                     raise ValueError("Erro no atributo selecionado")
 
@@ -124,18 +125,3 @@ class ControllerAtividade:
             raise FileNotFoundError("O arquivo não existe.")
         except Exception as e:
             return f"Erro ao carregar o arquivo de atividades. {str(e)}"
-
-if __name__ == "__main__":
-
-    atividades = []
-    controladora = ControllerAtividade(atividades)
-
-    print(controladora.cadastrar())
-    input()
-    print(controladora.cadastrar())
-    input()
-    controladora.listar("Atividades Cadastradas", choose_flag=False)
-    while True:
-        print(controladora.alterar())
-        input()
-        controladora.listar("Atividades Cadastradas", choose_flag=False)

@@ -1,22 +1,24 @@
 ﻿class Atividade:
-    def __init__(self, acao: str, origem: str, unidade_pagamento: str, valor_unidade: float):
+    def __init__(self, acao: str, origem: str, unidade_pagamento: str, valor_unidade: float, coluna_referencia: str):
         self.acao = None
         self.origem = None
         self.unidade_pagamento = None
         self.valor_unidade = None
+        self.coluna_referencia = None
 
         self.set_acao(acao)
         self.set_origem(origem)
         self.set_unidade_pagamento(unidade_pagamento)
         self.set_valor_unidade(valor_unidade)
+        self.set_coluna_referencia(coluna_referencia)
 
     def __eq__(self, other):
         if not isinstance(other, Atividade):
             return NotImplemented
-        return (self.acao, self.origem, self.unidade_pagamento, self.valor_unidade) == (other.acao, other.origem, other.unidade_pagamento, other.valor_unidade)
+        return (self.acao, self.origem, self.unidade_pagamento, self.valor_unidade, self.coluna_referencia) == (other.acao, other.origem, other.unidade_pagamento, other.valor_unidade, other.coluna_referencia)
 
     def __str__(self):
-        return f"{self.acao}, {self.origem} - {self.valor_unidade} por {self.unidade_pagamento}"
+        return f"{self.acao}, {self.origem} - {self.valor_unidade} por {self.unidade_pagamento} em {self.coluna_referencia}"
 
     def set_acao(self, acao: str):
         self.acao = acao
@@ -35,3 +37,6 @@
 
     def set_valor_unidade(self, valor_unidade: float):
         self.valor_unidade = valor_unidade
+
+    def set_coluna_referencia(self, coluna_referencia: str):
+        self.coluna_referencia = coluna_referencia
