@@ -30,8 +30,9 @@ class ControllerAcoesConcGmax:
                     df_atv = df_atv[["NOTAS_NUM_NS", "TSERVICOS_CT_COD", "TACOES_DES", "ACOES_DAT_CONCLUSAO", atv.coluna_referencia]]
                     dfs_por_atv.append(df_atv)
 
-                for df in dfs_por_atv:
-                    df.to_excel(f".\\exported_data\\{pessoa.nome}_{datetime.UTC}.xlsx")
+                if len(dfs_por_atv) != 0:
+                    for df in dfs_por_atv:
+                        df.to_excel(f".\\exported_data\\{pessoa.nome}_{datetime.UTC}.xlsx")
             return "Relação exportada com sucesso."
 
         except Exception as e:
