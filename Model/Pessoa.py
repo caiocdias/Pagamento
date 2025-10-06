@@ -6,7 +6,7 @@ class Pessoa:
         self.matricula = None
         self.chave_pix = None
         self.email = None
-        self.atividades = []
+        self.lista_atividades = []
 
         self.set_nome(nome)
         self.set_matricula(matricula)
@@ -24,3 +24,13 @@ class Pessoa:
 
     def set_email(self, email):
         self.email = email
+
+    def atribuir_atividade(self, atividade: Atividade) -> bool:
+        if atividade is not None:
+            self.lista_atividades.append(atividade)
+            return True
+        return False
+
+    def remover_atividade(self, index) -> bool:
+        self.lista_atividades.pop(index)
+        return True
