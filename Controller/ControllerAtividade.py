@@ -25,7 +25,9 @@ class ControllerAtividade:
 
             coluna_referencia = input("Digite coluna de referência: ")
 
-            atividade_criada = Atividade(acao, origens[origem_selecionada], unidades_pagamento[unidade_selecionada], valor_unidade, coluna_referencia)
+            acao_reduzir = input("Digete a ação para reduzir ou deixe em vazio: ")
+            acao_comparar = input("Digete a ação para comparar ou deixe em vazio: ")
+            atividade_criada = Atividade(acao, origens[origem_selecionada], unidades_pagamento[unidade_selecionada], valor_unidade, coluna_referencia, acao_reduzir, acao_comparar)
 
             self.lista_atividades.append(atividade_criada)
 
@@ -67,7 +69,7 @@ class ControllerAtividade:
             if confirmar != 'y':
                 return "Nenhuma atividade foi alterada."
 
-            opcoes = ["Alterar acao", "Alterar origem", "Alterar unidade de pagamento", "Alterar valor da unidade", "Alterar coluna de referência"]
+            opcoes = ["Alterar acao", "Alterar origem", "Alterar unidade de pagamento", "Alterar valor da unidade", "Alterar coluna de referência", "Alterar ação para reduzir", "Alterar ação para comparar"]
             opcao_selecionada = MenuSimples("Selecione o atributo para alterar", opcoes).choose()
 
             match opcao_selecionada:
@@ -88,6 +90,12 @@ class ControllerAtividade:
                 case 4:
                     referencia = input("Digite a nova coluna de referência: ")
                     self.lista_atividades[atividade_selecionada].set_coluna_referencia(referencia)
+                case 5:
+                    acao_reduzir = input("Digite a nova ação para reduzir: ")
+                    self.lista_atividades[atividade_selecionada].set_acao_reduzir(acao_reduzir)
+                case 6:
+                    acao_comparar = input("Digite a nova ação para comparar: ")
+                    self.lista_atividades[atividade_selecionada].set_acao_comparar(acao_comparar)
                 case _:
                     raise ValueError("Erro no atributo selecionado")
 
