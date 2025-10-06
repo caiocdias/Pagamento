@@ -22,7 +22,7 @@ class ControllerAtividade:
 
             self.lista_atividades.append(atividade_criada)
 
-            return "Atvidade criada com sucesso."
+            return "Atvidade cadastrada com sucesso."
         except Exception as e:
             return f"\nErro ao criar atividade. {str(e)}"
 
