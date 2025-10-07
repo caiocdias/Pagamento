@@ -32,7 +32,7 @@ class ControllerAcoesConcGmax:
 
                 if len(dfs_por_atv) != 0:
                     for df in dfs_por_atv:
-                        df.to_excel(f".\\exported_data\\{pessoa.nome}_{datetime.UTC}.xlsx")
+                        df.to_excel(f".\\exported_data\\{pessoa.nome}_{df["TACOES_DES"].iloc[0]}.xlsx", index=None)
             return "Relação exportada com sucesso."
 
         except Exception as e:
