@@ -1,4 +1,6 @@
-﻿import sys
+﻿from datetime import datetime
+import sys
+
 from Controller import ControllerAtividade, ControllerPessoa
 from Controller.ControllerAcoesConcGmax import ControllerAcoesConcGmax
 from View import MenuSimples
@@ -67,8 +69,8 @@ while True:
                         case _:
                             raise ValueError("Erro no atributo selecionado")
             case 2:
-                start_date = input("Entre com a data inicial: ")
-                end_date = input("Entre com a data final: ")
+                start_date = datetime.strptime(input("Entre com a data inicial (dd/mm/aaaa): "), "%d/%m/%Y")
+                end_date = datetime.strptime(input("Entre com a data final (dd/mm/aaaa): "), "%d/%m/%Y")
                 controller_acoes_conc_gmax = ControllerAcoesConcGmax(controller_pessoas.lista_pessoas, start_date, end_date)
                 print(controller_acoes_conc_gmax.gerar_producao())
             case 3:
