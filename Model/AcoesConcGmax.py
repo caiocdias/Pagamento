@@ -22,3 +22,15 @@ class AcoesConcGmax:
         self.dataframe["ACOES_QTD_US_GEO"] = self.dataframe["ACOES_QTD_US_GEO"].replace(0.001, 0)
         self.dataframe["ACOES_QTD_US_PRJ"] = self.dataframe["ACOES_QTD_US_PRJ"].replace(0.001, 0)
         self.dataframe["ACOES_QTD_US_TOP"] = self.dataframe["ACOES_QTD_US_TOP"].replace(0.001, 0)
+
+    def get_df_acao_reduzir(self, acao_reduzir):
+        query = f"SELECT * FROM vBIAcoes WHERE ACOES_DAT_CONCLUSAO BETWEEN cast('{self.start_date.strftime("%Y-%m-%d")}' as datetime) AND cast('{self.end_date.strftime("%Y-%m-%d")}' as datetime) AND TACOES_DES IN ('{acao_reduzir}')"
+        db = DatabaseHandler('192.168.10.250', 'GMAX', 'U_PBI_READ', 'GMaxWebBI#2025')
+
+        return pd.read_sql(query, db.get_sqlalchemy_engine())
+
+    def get_df_acao_comparar(self, acao_comparar):
+        query = f"SELECT * FROM vBIAcoes WHERE ACOES_DAT_CONCLUSAO BETWEEN cast('{self.start_date.strftime("%Y-%m-%d")}' as datetime) AND cast('{self.end_date.strftime("%Y-%m-%d")}' as datetime) AND TACOES_DES IN ('{acao_comparar}')"
+        db = DatabaseHandler('192.168.10.250', 'GMAX', 'U_PBI_READ', 'GMaxWebBI#2025')
+
+        return pd.read_sql(query, db.get_sqlalchemy_engine())
