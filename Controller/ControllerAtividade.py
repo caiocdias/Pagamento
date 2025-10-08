@@ -25,8 +25,8 @@ class ControllerAtividade:
 
             coluna_referencia = input("Digite coluna de referência: ")
 
-            acao_reduzir = input("Digite a ação para reduzir ou deixe em vazio: ")
-            acao_comparar = input("Digite a ação para comparar ou deixe em vazio: ")
+            acao_reduzir = [x.strip() for x in input("Digite as ações para reduzir ou deixe em vazio (separe por vírgula): ").split(',') if x.strip()] or []
+            acao_comparar = [x.strip() for x in input("Digite as ações para comparar ou deixe em vazio (separe por vírgula): ").split(',') if x.strip()] or []
             atividade_criada = Atividade(acao, origens[origem_selecionada], unidades_pagamento[unidade_selecionada], valor_unidade, coluna_referencia, acao_reduzir, acao_comparar)
 
             self.lista_atividades.append(atividade_criada)
@@ -91,10 +91,14 @@ class ControllerAtividade:
                     referencia = input("Digite a nova coluna de referência: ")
                     self.lista_atividades[atividade_selecionada].set_coluna_referencia(referencia)
                 case 5:
-                    acao_reduzir = input("Digite a nova ação para reduzir: ")
+                    acao_reduzir = [x.strip() for x in input(
+                        "Digite as ações para reduzir ou deixe em vazio (separe por vírgula): ").split(',') if
+                                    x.strip()] or []
                     self.lista_atividades[atividade_selecionada].set_acao_reduzir(acao_reduzir)
                 case 6:
-                    acao_comparar = input("Digite a nova ação para comparar: ")
+                    acao_comparar = [x.strip() for x in input(
+                        "Digite as ações para comparar ou deixe em vazio (separe por vírgula): ").split(',') if
+                                     x.strip()] or []
                     self.lista_atividades[atividade_selecionada].set_acao_comparar(acao_comparar)
                 case _:
                     raise ValueError("Erro no atributo selecionado")

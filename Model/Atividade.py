@@ -1,5 +1,5 @@
 ﻿class Atividade:
-    def __init__(self, acao: str, origem: str, unidade_pagamento: str, valor_unidade: float, coluna_referencia: str, acao_reduzir: str, acao_comparar: str):
+    def __init__(self, acao: str, origem: str, unidade_pagamento: str, valor_unidade: float, coluna_referencia: str, acao_reduzir: list, acao_comparar: list):
         self.acao = None
         self.origem = None
         self.unidade_pagamento = None
@@ -19,10 +19,12 @@
     def __eq__(self, other):
         if not isinstance(other, Atividade):
             return NotImplemented
-        return (self.acao, self.origem, self.unidade_pagamento, self.valor_unidade, self.coluna_referencia) == (other.acao, other.origem, other.unidade_pagamento, other.valor_unidade, other.coluna_referencia)
+
+        return ((self.acao, self.origem, self.unidade_pagamento, self.valor_unidade, self.coluna_referencia, self.acao_reduzir, self.acao_comparar)
+                == (other.acao, other.origem, other.unidade_pagamento, other.valor_unidade, other.coluna_referencia, other.acao_reduzir, other.acao_comparar))
 
     def __str__(self):
-        return f"{self.acao}, {self.origem} - {self.valor_unidade} por {self.unidade_pagamento} em {self.coluna_referencia}"
+        return f"{self.acao}, {self.origem} - {self.valor_unidade} por {self.unidade_pagamento} em {self.coluna_referencia}" + f" Reducão: {self.acao_reduzir}" + f" Comparar: {self.acao_comparar}"
 
     def set_acao(self, acao: str):
         self.acao = acao
@@ -45,8 +47,8 @@
     def set_coluna_referencia(self, coluna_referencia: str):
         self.coluna_referencia = coluna_referencia
 
-    def set_acao_reduzir(self, acao_reduzir: str):
+    def set_acao_reduzir(self, acao_reduzir: list):
         self.acao_reduzir = acao_reduzir
 
-    def set_acao_comparar(self, acao_comparar: str):
+    def set_acao_comparar(self, acao_comparar: list):
         self.acao_comparar = acao_comparar

@@ -23,7 +23,6 @@ class ControllerPessoa:
             email = input("Digite o email: ")
 
             opcoes_atividade = [str(atv) for atv in self.lista_atividades]
-            print(opcoes_atividade)
             atividades = []
             while True:
                 opcao_selecionada = MenuSimples("Atividade para Atribuir", opcoes_atividade).choose(include_exit=True)
