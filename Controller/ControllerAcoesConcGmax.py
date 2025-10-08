@@ -1,5 +1,5 @@
 ﻿import datetime
-
+from Generic import Utils
 from Model import AcoesConcGmax
 
 class ControllerAcoesConcGmax:
@@ -11,6 +11,33 @@ class ControllerAcoesConcGmax:
 
     def gerar_producao(self):
         try:
+            cols_soma = ["ACOES_QTD_US_INTERNA", "ACOES_QTD_US_TOP", "ACOES_QTD_US_PRJ", "ACOES_QTD_US_GEO"]
+
+            def somase_por_ns(df):
+                # Soma linha-a-linha as 4 colunas e depois agrega por NOTAS_NUM_NS
+                return (df.assign(_total=df[cols_soma].sum(axis=1, skipna=True))
+                        .groupby("NOTAS_NUM_NS")["_total"]
+                        .sum())
+
+            def somase_de_lista(lista_acoes, getter):
+                """
+                Para uma lista de ações, obtém cada df via 'getter(acao)',
+                calcula a soma por NOTAS_NUM_NS e agrega todas as séries via add(fill_value=0).
+                """
+                serie_total = None
+                # Garante lista e filtra vazios; mantém compatibilidade se vier string
+                if isinstance(lista_acoes, str):
+                    lista_acoes = [lista_acoes]
+                lista_acoes = [a for a in (lista_acoes or []) if a]
+
+                for acao in lista_acoes:
+                    df_tmp = getter(acao)
+                    if df_tmp is not None and not df_tmp.empty:
+                        serie = somase_por_ns(df_tmp)
+                        serie_total = serie if serie_total is None else serie_total.add(serie, fill_value=0)
+
+                return serie_total
+
             for pessoa in self.lista_pessoas:
                 df_src = self.AcoesConcGmax.dataframe
                 dfs_por_atv = []
@@ -27,13 +54,42 @@ class ControllerAcoesConcGmax:
                     if df_atv.empty:
                         continue
 
-                    df_atv = df_atv[["NOTAS_NUM_NS", "TSERVICOS_CT_COD", "TACOES_DES", "ACOES_DAT_CONCLUSAO", atv.coluna_referencia]]
+                    # Calcula séries agregadas a partir das listas
+                    serie_comp = somase_de_lista(
+                        getattr(atv, "acao_comparar", []),
+                        self.AcoesConcGmax.get_df_acao_comparar
+                    )
+                    serie_red = somase_de_lista(
+                        getattr(atv, "acao_reduzir", []),
+                        self.AcoesConcGmax.get_df_acao_reduzir
+                    )
+
+                    # Mapeia de volta no df_atv pelo NOTAS_NUM_NS
+                    if serie_comp is not None:
+                        df_atv["SOMA_ACOES_COMPARAR"] = df_atv["NOTAS_NUM_NS"].map(serie_comp).fillna(0)
+
+                    if serie_red is not None:
+                        df_atv["SOMA_ACOES_REDUZIR"] = df_atv["NOTAS_NUM_NS"].map(serie_red).fillna(0)
+
+                    # Seleção de colunas (inclui as novas se existirem)
+                    cols_base = ["NOTAS_NUM_NS", "TSERVICOS_CT_COD", "TACOES_DES", "ACOES_DAT_CONCLUSAO",
+                                 atv.coluna_referencia]
+                    cols_extra = []
+                    if "SOMA_ACOES_COMPARAR" in df_atv.columns:
+                        cols_extra.append("SOMA_ACOES_COMPARAR")
+                    if "SOMA_ACOES_REDUZIR" in df_atv.columns:
+                        cols_extra.append("SOMA_ACOES_REDUZIR")
+
+                    df_atv = df_atv[cols_base + cols_extra]
                     dfs_por_atv.append(df_atv)
 
-                if len(dfs_por_atv) != 0:
-                    for df in dfs_por_atv:
-                        df.to_excel(f".\\exported_data\\{pessoa.nome}_{df["TACOES_DES"].iloc[0]}.xlsx", index=None)
+                if dfs_por_atv:
+                    Utils._exportar_pdf_pessoa(pessoa, dfs_por_atv, self.start_date, self.end_date,
+                                         pasta_out=".\\exported_data")
+
             return "Relação exportada com sucesso."
 
         except Exception as e:
             return f"Erro ao exportar relação. {str(e)}"
+
+
