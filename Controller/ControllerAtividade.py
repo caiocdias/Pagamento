@@ -15,8 +15,6 @@ class ControllerAtividade:
     def cadastrar(self):
         try:
             acao = input("\nDigite a ação da atividade: ")
-            origens = ["AcoesConcGmax", "AcoesConcSap"]
-            origem_selecionada = MenuSimples("Selecione a origem: ", origens).choose(include_exit=False)
 
             unidades_pagamento = ['NS', 'US']
             unidade_selecionada = MenuSimples("Seleciona a unidade de pagamento", unidades_pagamento).choose(include_exit=False)
@@ -27,7 +25,7 @@ class ControllerAtividade:
 
             acao_reduzir = [x.strip() for x in input("Digite as ações para reduzir ou deixe em vazio (separe por vírgula): ").split(',') if x.strip()] or []
             acao_comparar = [x.strip() for x in input("Digite as ações para comparar ou deixe em vazio (separe por vírgula): ").split(',') if x.strip()] or []
-            atividade_criada = Atividade(acao, origens[origem_selecionada], unidades_pagamento[unidade_selecionada], valor_unidade, coluna_referencia, acao_reduzir, acao_comparar)
+            atividade_criada = Atividade(acao, unidades_pagamento[unidade_selecionada], valor_unidade, coluna_referencia, acao_reduzir, acao_comparar)
 
             self.lista_atividades.append(atividade_criada)
 
@@ -69,7 +67,7 @@ class ControllerAtividade:
             if confirmar != 'y':
                 return "Nenhuma atividade foi alterada."
 
-            opcoes = ["Alterar acao", "Alterar origem", "Alterar unidade de pagamento", "Alterar valor da unidade", "Alterar coluna de referência", "Alterar ação para reduzir", "Alterar ação para comparar"]
+            opcoes = ["Alterar acao" "Alterar unidade de pagamento", "Alterar valor da unidade", "Alterar coluna de referência", "Alterar ação para reduzir", "Alterar ação para comparar"]
             opcao_selecionada = MenuSimples("Selecione o atributo para alterar", opcoes).choose()
 
             match opcao_selecionada:
@@ -77,25 +75,21 @@ class ControllerAtividade:
                     acao = input("Nova acao: ")
                     self.lista_atividades[atividade_selecionada].set_acao(acao)
                 case 1:
-                    origens = ["AcoesConcGmax", "AcoesConcSap"]
-                    origem_selecionada = MenuSimples("Selecione a origem: ", origens).choose(include_exit=False)
-                    self.lista_atividades[atividade_selecionada].set_origem(origens[origem_selecionada])
-                case 2:
                     unidades_pagamento = ["NS", "US"]
                     unidade_selecionada = MenuSimples("Seleciona a unidade de pagamento", unidades_pagamento).choose(include_exit=False)
                     self.lista_atividades[atividade_selecionada].set_unidade_pagamento(unidades_pagamento[unidade_selecionada])
-                case 3:
+                case 2:
                     valor = float(input("Novo valor de unidade: "))
                     self.lista_atividades[atividade_selecionada].set_valor_unidade(valor)
-                case 4:
+                case 3:
                     referencia = input("Digite a nova coluna de referência: ")
                     self.lista_atividades[atividade_selecionada].set_coluna_referencia(referencia)
-                case 5:
+                case 4:
                     acao_reduzir = [x.strip() for x in input(
                         "Digite as ações para reduzir ou deixe em vazio (separe por vírgula): ").split(',') if
                                     x.strip()] or []
                     self.lista_atividades[atividade_selecionada].set_acao_reduzir(acao_reduzir)
-                case 6:
+                case 5:
                     acao_comparar = [x.strip() for x in input(
                         "Digite as ações para comparar ou deixe em vazio (separe por vírgula): ").split(',') if
                                      x.strip()] or []
