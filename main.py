@@ -2,6 +2,7 @@
 from Generic import *
 from Controller import ControllerAtividade, ControllerPessoa
 from Controller.ControllerAcoesConcGmax import ControllerAcoesConcGmax
+import sys
 from View import MenuSimples
 
 
