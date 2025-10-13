@@ -25,10 +25,6 @@ class EmailGen:
         )
 
     def _extract_text_from_pdf(self, pdf_path: str) -> str:
-        if PdfReader is None:
-            raise RuntimeError(
-                "A biblioteca PyPDF2 não está disponível. Instale com: pip install PyPDF2"
-            )
         reader = PdfReader(pdf_path)
         texts = []
         for page in reader.pages:
@@ -62,11 +58,6 @@ class EmailGen:
         return m.group(1).splitlines()[0].strip()
 
     def _create_outlook_mail(self, to_addr: str, subject: str, body: str, attachment_path: str):
-        if win32com is None:
-            raise RuntimeError(
-                "A biblioteca pywin32 não está disponível ou o Outlook não está acessível. "
-                "Instale com: pip install pywin32 (e garanta que o Microsoft Outlook esteja instalado)."
-            )
         app = win32com.client.Dispatch("Outlook.Application")
         mail = app.CreateItem(0)
         mail.To = to_addr
@@ -103,15 +94,6 @@ class EmailGen:
                 email = self._parse_email(text)
                 periodo = self._parse_periodo(text)
                 nome = self._parse_nome(text) or "Colaborador"
-
-                if not email:
-                    if verbose:
-                        print(f"[IGNORADO] Sem email válido em: {os.path.basename(pdf)}")
-                    continue
-                if not periodo:
-                    if verbose:
-                        print(f"[IGNORADO] Sem período válido em: {os.path.basename(pdf)}")
-                    continue
 
                 inicio, fim = periodo
                 subject = self.subject_template.format(
