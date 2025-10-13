@@ -4,7 +4,7 @@ from Model import AcoesConcGmax
 import pandas as pd
 
 class ControllerAcoesConcGmax:
-    def __init__(self, lista_pessoas : list, start_date: str, end_date: str):
+    def __init__(self, lista_pessoas : list, start_date, end_date):
         self.start_date = start_date
         self.end_date = end_date
         self.lista_pessoas = lista_pessoas

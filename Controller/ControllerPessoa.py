@@ -174,3 +174,28 @@ class ControllerPessoa:
                         print("Atividade removida com sucesso.")
                 case _:
                     raise ValueError("Erro no atributo selecionado")
+
+    def reconciliar_atividades(self):
+        def _key(atv):
+            return (
+                atv.acao,
+                atv.unidade_pagamento,
+                atv.valor_unidade,
+                atv.coluna_referencia,
+                tuple(atv.acao_reduzir or []),
+                tuple(atv.acao_comparar or []),
+            )
+
+        mapa = {_key(a): a for a in self.lista_atividades}
+
+        for pessoa in self.lista_pessoas:
+            novas = []
+            for atv in pessoa.lista_atividades:
+                k = _key(atv)
+                ref = mapa.get(k)
+                if ref is None:
+                    self.lista_atividades.append(atv)
+                    mapa[k] = atv
+                    ref = atv
+                novas.append(ref)
+            pessoa.lista_atividades = novas

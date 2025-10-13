@@ -67,7 +67,7 @@ class ControllerAtividade:
             if confirmar != 'y':
                 return "Nenhuma atividade foi alterada."
 
-            opcoes = ["Alterar acao" "Alterar unidade de pagamento", "Alterar valor da unidade", "Alterar coluna de referência", "Alterar ação para reduzir", "Alterar ação para comparar"]
+            opcoes = ["Alterar ação", "Alterar unidade de pagamento", "Alterar valor da unidade", "Alterar coluna de referência", "Alterar ação para reduzir", "Alterar ação para comparar"]
             opcao_selecionada = MenuSimples("Selecione o atributo para alterar", opcoes).choose()
 
             match opcao_selecionada:

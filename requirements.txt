@@ -4,3 +4,5 @@ pandas
 openpyxl
 reportlab
 xlsxwriter
+PyPDF2
+pywin32

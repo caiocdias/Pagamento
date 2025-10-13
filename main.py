@@ -1,6 +1,5 @@
 ﻿from datetime import datetime
-import sys
-
+from Generic import *
 from Controller import ControllerAtividade, ControllerPessoa
 from Controller.ControllerAcoesConcGmax import ControllerAcoesConcGmax
 from View import MenuSimples
@@ -12,14 +11,14 @@ lista_pessoas = []
 
 controller_atividades = ControllerAtividade(lista_atividades)
 print(controller_atividades.carregar())
-
 controller_pessoas = ControllerPessoa(lista_pessoas, controller_atividades.lista_atividades)
 print(controller_pessoas.carregar())
 
+controller_pessoas.reconciliar_atividades()
 
 while True:
     try:
-        opcoes = ["Menu de Atividades", "Menu de Pessoas", "Gerar Relação Gmax", "Salvar e Sair", "Sair sem Salvar"]
+        opcoes = ["Menu de Atividades", "Menu de Pessoas", "Gerar Relação Gmax", "Gerar Emails" ,"Salvar e Sair", "Sair sem Salvar"]
         opcao_selecionada = MenuSimples("Menu Principal", opcoes).choose(include_exit=False)
 
         match opcao_selecionada:
@@ -71,9 +70,15 @@ while True:
             case 2:
                 start_date = datetime.strptime(input("Entre com a data inicial (dd/mm/aaaa): "), "%d/%m/%Y")
                 end_date = datetime.strptime(input("Entre com a data final (dd/mm/aaaa): "), "%d/%m/%Y")
+
+                if start_date > end_date:
+                    raise ValueError("Data de início deve ser anterior à data final.")
+
                 controller_acoes_conc_gmax = ControllerAcoesConcGmax(controller_pessoas.lista_pessoas, start_date, end_date)
                 print(controller_acoes_conc_gmax.gerar_producao())
             case 3:
+                EmailGen().process_folder(".//exported_data")
+            case 4:
                 retorno_salvar_atividades = controller_atividades.salvar()
                 retorno_salvar_pessoas = controller_pessoas.salvar()
 
@@ -86,7 +91,7 @@ while True:
 
                 print("Não foi possível salvar e sair.")
 
-            case 4:
+            case 5:
                 input("\nObrigado por utilizar o programa.\nAutor: Caio Cezar Dias\nContato: caiocd007@gmail.com\n\nPressione ENTER para fechar.")
                 sys.exit()
             case _:
