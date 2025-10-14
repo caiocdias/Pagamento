@@ -60,6 +60,8 @@ class EmailGen:
     def _create_outlook_mail(self, to_addr: str, subject: str, body: str, attachment_path: str):
         app = win32com.client.Dispatch("Outlook.Application")
         mail = app.CreateItem(0)
+        if to_addr is None:
+            to_addr = ''
         mail.To = to_addr
         mail.Subject = subject
         mail.Cc = "amilton.amaral@zenyprojetosoeste.com.br"
