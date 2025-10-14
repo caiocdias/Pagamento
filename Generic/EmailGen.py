@@ -19,8 +19,8 @@ class EmailGen:
         # Placeholders: {nome}, {periodo_inicio}, {periodo_fim}
         self.subject_template = subject_template or "Relatório de Produção - {nome} ({periodo_inicio} a {periodo_fim})"
         self.body_template = body_template or (
-            "Olá,\n\n"
-            "Segue em anexo o relatório de produção referente ao período de {periodo_inicio} a {periodo_fim}.\n"
+            "Bom dia,\n\n"
+            "Segue em anexo, para conferência, o relatório de produção referente ao período de {periodo_inicio} a {periodo_fim}.\n"
             "Qualquer dúvida fico à disposição.\n\n"
         )
 
