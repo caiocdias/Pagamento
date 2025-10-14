@@ -1,5 +1,6 @@
 ﻿.idea
 .venv
+venv/
 compressed_data/lista_atividades.pkl
 compressed_data/lista_pessoas.pkl
 exported_data/
