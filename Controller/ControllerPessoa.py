@@ -61,7 +61,7 @@ class ControllerPessoa:
 
             self.lista_pessoas.pop(pessoa_selecionada)
 
-            return "Pessoa removida com sucesso"
+            return "Pessoa removida com sucesso."
         except Exception as e:
             return f"\nErro ao remover pessoa. {str(e)}"
 
