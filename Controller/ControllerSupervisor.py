@@ -41,3 +41,36 @@ class ControllerSupervisor:
 
         except Exception as e:
             return f"Erro ao cadastrar supervisor. {str(e)}"
+
+    def remover(self):
+        try:
+            if len(self.lista_supervisores) == 0:
+                raise Exception("Não há supervisores cadastrados.")
+
+            supervisor_selecionado = self.listar("Selecione o supervisor para remover", choose_flag=True)
+
+            if supervisor_selecionado is None:
+                return "Nenhum supervisor foi removido."
+
+            confirmar = input("Tem certeza que deseja remover o supervisor? (y): ").lower()
+
+            if confirmar != 'y':
+                return "Nenhum supervisor foi removido."
+
+            self.lista_supervisores.pop(supervisor_selecionado)
+
+            return "Supervisor removido com sucesso."
+        except Exception as e:
+            return f"Erro ao remover Supervisor."
+
+
+    def listar(self, title: str, choose_flag: bool = False):
+        if len(self.lista_supervisores) == 0:
+            raise Exception("Não há supervisores cadastrados.")
+
+        menu = MenuSimples(title, [str(supervisor) for supervisor in self.lista_supervisores])
+        if choose_flag:
+            return menu.choose(include_exit=True)
+
+        menu.show(include_exit=False)
+        return None
