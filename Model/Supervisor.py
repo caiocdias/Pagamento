@@ -6,12 +6,17 @@ class PastaInvalidaError(ValueError):
     """"O caminho fornecido é inválido"""
 
 class Supervisor:
-    def __init__(self):
+    def __init__(self, nome: str, matricula: str, email: str, pasta: str):
         self.nome = None
         self.matricula = None
         self.email = None
         self.pasta = None
         self.lista_pessoas = []
+
+        self.set_nome(nome)
+        self.set_matricula(matricula)
+        self.set_email(email)
+        self.set_pasta(pasta)
 
     def set_nome(self, nome: str):
         self.nome = nome

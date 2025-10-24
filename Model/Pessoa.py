@@ -44,3 +44,10 @@ class Pessoa:
         return (
             f"Nome: {self.nome}, Matrícula: {self.matricula}, Pix: {self.chave_pix}, Email: {self.email}, Atividades: [{atividades_fmt}]"
         )
+
+    def __eq__(self, other):
+        if not isinstance(other, Pessoa):
+            return NotImplemented
+
+        return ((self.nome, self.matricula, self.chave_pix, self.email)
+                == (other.nome, other.matricula, other.chave_pix, other.email))
