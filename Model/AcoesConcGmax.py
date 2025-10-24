@@ -1,5 +1,4 @@
 ﻿import pandas as pd
-
 from Data import DatabaseHandler
 
 class AcoesConcGmax:
@@ -25,12 +24,9 @@ class AcoesConcGmax:
 
     @staticmethod
     def _sql_in(valores):
-        # aceita string única ou lista
         if isinstance(valores, str):
             valores = [valores]
-        # filtra vazios e escapa aspas simples para SQL
         vals = [str(v).replace("'", "''") for v in (valores or []) if v not in (None, "")]
-        # evita IN () – usa ('') para não retornar nada (assumindo que não há TACOES_DES = '')
         if not vals:
             return "('')"
         return "(" + ", ".join(f"'{v}'" for v in vals) + ")"
