@@ -1,7 +1,5 @@
 ﻿import os.path
 import pickle
-from math import trunc
-
 from Model import Pessoa
 from View import MenuSimples
 
