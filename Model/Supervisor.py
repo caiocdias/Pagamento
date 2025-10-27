@@ -41,3 +41,11 @@ class Supervisor:
     def remover_pessoa(self, index: int) -> bool:
         self.lista_pessoas.pop(index)
         return True
+
+    def __str__(self):
+        pessoas_fmt = " | ".join(
+            f"{p.nome}"
+            for p in self.lista_pessoas
+            if isinstance(p, Pessoa)
+        )
+        return f"Nome: {self.nome}, Matrícula: {self.matricula}, Email: {self.email}, Pasta: {self.pasta}, Pessoas: [{pessoas_fmt}]"
