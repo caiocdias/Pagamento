@@ -37,6 +37,7 @@ while True:
                             input()
                         case 1:
                             print(controller_atividades.remover())
+                            controller_pessoas.reconciliar_atividades()
                             input()
                         case 2:
                             print(controller_atividades.alterar())
@@ -59,7 +60,9 @@ while True:
                             print(controller_pessoas.cadastrar())
                             input()
                         case 1:
-                            print(controller_pessoas.remover())
+                            msg = controller_pessoas.remover()
+                            print(msg)
+                            controller_supervisores.reconciliar_pessoas()
                             input()
                         case 2:
                             print(controller_pessoas.alterar())

@@ -137,7 +137,7 @@ class ControllerSupervisor:
                         if pessoa_para_remover is None:
                             break
 
-                        self.lista_pessoas[supervisor_selecionado].remover_pessoa(pessoa_para_remover)
+                        self.lista_supervisores[supervisor_selecionado].remover_pessoa(pessoa_para_remover)
                         print("Pessoa removida com sucesso.")
                 case _:
                     raise ValueError("Erro no atributo selecionado")
@@ -177,16 +177,12 @@ class ControllerSupervisor:
         def _key(p):
             return (p.nome, p.matricula, p.chave_pix, p.email)
 
-        mapa = {_key(p): p for p in self.lista_pessoas}
+        mapa = {_key(p): p for p in self.lista_pessoas}  # master
 
         for sup in self.lista_supervisores:
             novas = []
             for p in sup.lista_pessoas:
-                k = _key(p)
-                ref = mapa.get(k)
-                if ref is None:
-                    self.lista_pessoas.append(p)
-                    mapa[k] = p
-                    ref = p
-                novas.append(ref)
+                ref = mapa.get(_key(p))
+                if ref is not None:  # mantém só quem existe no master
+                    novas.append(ref)
             sup.lista_pessoas = novas

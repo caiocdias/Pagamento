@@ -184,16 +184,12 @@ class ControllerPessoa:
                 tuple(atv.acao_comparar or []),
             )
 
-        mapa = {_key(a): a for a in self.lista_atividades}
+        mapa = {_key(a): a for a in self.lista_atividades}  # MASTER: atividades válidas
 
         for pessoa in self.lista_pessoas:
             novas = []
             for atv in pessoa.lista_atividades:
-                k = _key(atv)
-                ref = mapa.get(k)
-                if ref is None:
-                    self.lista_atividades.append(atv)
-                    mapa[k] = atv
-                    ref = atv
-                novas.append(ref)
+                ref = mapa.get(_key(atv))
+                if ref is not None:  # mantém só quem existe no master
+                    novas.append(ref)
             pessoa.lista_atividades = novas
