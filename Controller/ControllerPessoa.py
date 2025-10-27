@@ -63,7 +63,7 @@ class ControllerPessoa:
 
             return "Pessoa removida com sucesso."
         except Exception as e:
-            return f"\nErro ao remover pessoa. {str(e)}"
+            return f"Erro ao remover pessoa. {str(e)}"
 
     def alterar(self):
         try:
