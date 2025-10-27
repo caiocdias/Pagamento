@@ -106,7 +106,7 @@ while True:
                     raise ValueError("Data de início deve ser anterior à data final.")
 
                 controller_acoes_conc_gmax = ControllerAcoesConcGmax(controller_pessoas.lista_pessoas, start_date, end_date)
-                print(controller_acoes_conc_gmax.gerar_producao())
+                print(controller_acoes_conc_gmax.gerar_producao_por_supervisor(controller_supervisores.lista_supervisores))
             case 4:
                 retorno_salvar_atividades = controller_atividades.salvar()
                 retorno_salvar_pessoas = controller_pessoas.salvar()
