@@ -24,7 +24,7 @@ controller_supervisores.reconciliar_pessoas()
 
 while True:
     try:
-        opcoes = ["Menu de Atividades", "Menu de Pessoas", "Menu de Supervisores","Gerar Relação Gmax", "Gerar Emails" ,"Salvar e Sair", "Sair sem Salvar"]
+        opcoes = ["Menu de Atividades", "Menu de Pessoas", "Menu de Supervisores", "Gerar Relação Gmax" ,"Salvar e Sair", "Sair sem Salvar"]
         opcao_selecionada = MenuSimples("Menu Principal", opcoes).choose(include_exit=False)
 
         match opcao_selecionada:
@@ -108,8 +108,6 @@ while True:
                 controller_acoes_conc_gmax = ControllerAcoesConcGmax(controller_pessoas.lista_pessoas, start_date, end_date)
                 print(controller_acoes_conc_gmax.gerar_producao())
             case 4:
-                EmailGen().process_folder(".//exported_data")
-            case 5:
                 retorno_salvar_atividades = controller_atividades.salvar()
                 retorno_salvar_pessoas = controller_pessoas.salvar()
                 retorno_salvar_supervisores = controller_supervisores.salvar()
@@ -125,7 +123,7 @@ while True:
 
                 print("Não foi possível salvar e sair.")
 
-            case 6:
+            case 5:
                 input("\nObrigado por utilizar o programa.\nAutor: Caio Cezar Dias\nContato: caiocd007@gmail.com\n\nPressione ENTER para fechar.")
                 sys.exit()
             case _:
