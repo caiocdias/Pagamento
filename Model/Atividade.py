@@ -29,7 +29,7 @@
 
     def set_unidade_pagamento(self, unidade_pagamento: str):
         if unidade_pagamento not in ['NS', 'US']:
-            raise ValueError("Origem deve ser NS ou US.")
+            raise ValueError("Unidade de pagamento deve ser NS ou US.")
 
         self.unidade_pagamento = unidade_pagamento
 
