@@ -1,4 +1,5 @@
-﻿from Model import Atividade
+﻿from Model import Atividade, Meta
+
 
 class Pessoa:
     def __init__(self, nome: str, matricula: str, chave_pix: str, email: str):
@@ -7,6 +8,7 @@ class Pessoa:
         self.chave_pix = None
         self.email = None
         self.lista_atividades = []
+        self.meta = None
 
         self.set_nome(nome)
         self.set_matricula(matricula)
@@ -24,6 +26,9 @@ class Pessoa:
 
     def set_email(self, email):
         self.email = email
+
+    def set_meta(self, meta: Meta):
+        self.meta = meta
 
     def atribuir_atividade(self, atividade: Atividade) -> bool:
         if atividade is not None:
@@ -49,5 +54,5 @@ class Pessoa:
         if not isinstance(other, Pessoa):
             return NotImplemented
 
-        return ((self.nome, self.matricula, self.chave_pix, self.email)
-                == (other.nome, other.matricula, other.chave_pix, other.email))
+        return ((self.nome, self.matricula, self.chave_pix, self.email, self.meta)
+                == (other.nome, other.matricula, other.chave_pix, other.email, other.meta))

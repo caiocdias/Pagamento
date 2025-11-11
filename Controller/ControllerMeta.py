@@ -1,11 +1,13 @@
 ﻿from View import MenuSimples
 from Model import Meta
-from Generic import Utils
+from Generic import Utils, read_float
+
 
 class ControllerMeta:
     def __init__(self):
         pass
 
+    @staticmethod
     def cadastrar(self):
         try:
             acoes = []
@@ -15,6 +17,7 @@ class ControllerMeta:
                     break
                 acoes.append(acao)
 
+            meta = read_float("Entre com o valor da meta: ", min_=0)
             opcoes_unidade = ["NS", "US"]
             opcao_unidade_selecionada = MenuSimples("Unidade de Pagamento", opcoes_unidade).choose(include_exit=False)
             unidade = opcoes_unidade[opcao_unidade_selecionada]
@@ -43,7 +46,7 @@ class ControllerMeta:
             if forma_pagamento == "ProducaoTotal":
                 fator_producao_total = Utils.read_float("Fator a ser pago pela produção total: ",0)
 
-            meta = Meta(unidade, forma_pagamento, fator_excedente, valor_fixo, fator_producao_total, acoes, colunas)
+            meta = Meta(meta, unidade, forma_pagamento, fator_excedente, valor_fixo, fator_producao_total, acoes, colunas)
             return meta
         except Exception as e:
             return f"Erro ao cadastrar Meta. {str(e)}"

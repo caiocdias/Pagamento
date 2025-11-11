@@ -1,5 +1,9 @@
-﻿class Meta:
-    def __init__(self, unidade: str, forma_pagamento: str, fator_excedente: float, valor_fixo: float, fator_producao_total: float, acoes: list, colunas_us: list):
+﻿from typing_extensions import override
+
+
+class Meta:
+    def __init__(self, meta: float ,unidade: str, forma_pagamento: str, fator_excedente: float, valor_fixo: float, fator_producao_total: float, acoes: list, colunas_us: list):
+        self.meta = None
         self.unidade = None
         self.forma_pagamento = None
         self.fator_excedente = None
@@ -8,21 +12,27 @@
         self.acoes = []
         self.colunas_us = []
 
+        self.set_meta(meta)
         self.set_acoes(acoes)
         self.set_unidade(unidade)
-        self.set_colunas_us(colunas_us)
+
+        if self.unidade == "US":
+            self.set_colunas_us(colunas_us)
+
         self.set_forma_pagamento(forma_pagamento)
 
         if self.forma_pagamento in ("Excedente", "Fixo+Excedente"):
             self.set_fator_excedente(fator_excedente)
 
-        if self.valor_fixo in ("Fixa", "Fixo+Excedente"):
+        if self.valor_fixo in ("Fixo", "Fixo+Excedente"):
             self.set_valor_fixo(valor_fixo)
 
         self.set_fator_producao_total(fator_producao_total)
 
+    def set_meta(self, meta: float):
+        self.meta = meta
 
-    def set_unidade(self, unidade):
+    def set_unidade(self, unidade: str):
         if unidade not in ["NS", "US"]:
             raise ValueError("Unidade de pagamento deve ser NS ou US.")
         self.unidade = unidade
@@ -70,3 +80,13 @@
     def get_min_acoes():
         min_acoes = 1
         return min_acoes
+
+
+    def __str__(self):
+        str1 = f"Meta: {self.meta} {self.unidade}. Forma de Pagamento: {self.forma_pagamento}"
+        str2 = f", Fator excedente: {self.fator_excedente}" if self.forma_pagamento in ("Excedente", "Fixo+Excedente") else ""
+        str3 = f", Valor fixo: {self.valor_fixo}" if self.forma_pagamento in ("Fixo", "Fixo+Excedente") else ""
+        str4 = f", Acoes: {str(self.acoes)}"
+        str5 = f", Colunas de US: {str(self.colunas_us)}" if self.unidade == "US" else ""
+
+        return str1+str2+str3+str4+str5
