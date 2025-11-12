@@ -34,13 +34,13 @@ class Meta:
         self.meta = meta
 
     def set_unidade(self, unidade: str):
-        if unidade not in ["NS", "US"]:
-            raise ValueError("Unidade de pagamento deve ser NS ou US.")
+        if unidade not in self.get_coluna_us_options():
+            raise ValueError(f"Unidade de pagamento deve estar contida em {self.get_coluna_us_options()}.")
         self.unidade = unidade
 
     def set_forma_pagamento(self, forma_pagamento):
-        if forma_pagamento not in ["Fixo", "Excedente", "Fixo+Excedente", "ProducaoTotal"]:
-            raise ValueError("Forma de pagamento deve ser Fixo, Excedente, Fixo + Excedente ou sobre a Produção Total.")
+        if forma_pagamento not in self.get_forma_pagamento_options():
+            raise ValueError(f"Forma de pagamento deve estar contida em {self.get_forma_pagamento_options()}.")
         self.forma_pagamento = forma_pagamento
 
     def set_fator_excedente(self, fator_excedente: float):
@@ -82,6 +82,13 @@ class Meta:
         min_acoes = 1
         return min_acoes
 
+    @staticmethod
+    def get_coluna_us_options():
+        return ["NS", "US"]
+
+    @staticmethod
+    def get_forma_pagamento_options():
+        return ["Fixo", "Excedente", "Fixo+Excedente", "ProducaoTotal"]
 
     def __str__(self):
         str1 = f"Meta: {self.meta} {self.unidade}. Forma de Pagamento: {self.forma_pagamento}"
