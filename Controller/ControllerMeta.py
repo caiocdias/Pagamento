@@ -8,7 +8,7 @@ class ControllerMeta:
         pass
 
     @staticmethod
-    def cadastrar(self):
+    def cadastrar():
         try:
             acoes = []
             while True:
@@ -40,7 +40,7 @@ class ControllerMeta:
 
             valor_fixo = None
             if forma_pagamento in ("Fixo", "Fixo+Excedente"):
-                valor_fixo = Utils.read_float("Fator fixo a ser pago", 0)
+                valor_fixo = Utils.read_float("Valor fixo a ser pago", 0)
 
             fator_producao_total = None
             if forma_pagamento == "ProducaoTotal":
@@ -50,3 +50,18 @@ class ControllerMeta:
             return meta
         except Exception as e:
             return f"Erro ao cadastrar Meta. {str(e)}"
+
+    @staticmethod
+    def alterar(meta: Meta):
+        try:
+            if not isinstance(meta, Meta):
+                raise TypeError(f"Objeto meta é do tipo [{type(meta).__name__}] e não uma instância de Meta.")
+
+            opcoes_alterar = ["Meta", "Unidade", "Acoes", "Forma Pagamento"]
+            if meta.forma_pagamento in ("Excedente", "Fixo+Excedente"): opcoes_alterar.append("Fator Excedente")
+            if meta.forma_pagamento in ("Fixo", "Fixo+Excedente"): opcoes_alterar.append("Valor Fixo")
+            if meta.forma_pagamento == "ProducaoTotal": opcoes_alterar.append("Valor Produção Total")
+
+            # TODO: Implementar a lógica de alteração
+        except Exception as e:
+            return f"Erro ao alterar Meta. {str(e)}"

@@ -2,7 +2,7 @@
 import pickle
 from Model import Pessoa
 from View import MenuSimples
-
+from Controller import ControllerMeta
 
 class ControllerPessoa:
     def __init__(self, lista_pessoas: list, lista_atividades: list):
@@ -15,29 +15,39 @@ class ControllerPessoa:
 
     def cadastrar(self):
         try:
+            # ========== Cadastro da Pessoa ==========
             nome = input("Digite o nome da pessoa: ")
             matricula = input("Digite a mátricula: ")
             chave_pix = input("Digite a chave pix: ")
             email = input("Digite o email: ")
-
-            opcoes_atividade = [str(atv) for atv in self.lista_atividades]
-            atividades = []
-            while True:
-                opcao_selecionada = MenuSimples("Atividade para Atribuir", opcoes_atividade).choose(include_exit=True)
-
-                if opcao_selecionada is None:
-                    break
-
-                if self.lista_atividades[opcao_selecionada] not in atividades:
-                    atividades.append(self.lista_atividades[opcao_selecionada])
-                else:
-                    print("Essa atividade já está na lista para cadastro.")
-                    input()
-
             pessoa = Pessoa(nome, matricula, chave_pix, email)
 
-            for atv in atividades:
-                pessoa.atribuir_atividade(atv)
+            # ========== Atribuição de Atividade ==========
+            idx = MenuSimples("Deseja cadastrar atividades (FH e Freelancer) para a pessoa?", options=["Sim", "Não"]).choose(include_exit=False)
+            if idx == 0:
+                opcoes_atividade = [str(atv) for atv in self.lista_atividades]
+                atividades = []
+                while True:
+                    opcao_selecionada = MenuSimples("Atividade para Atribuir", opcoes_atividade).choose(include_exit=True)
+
+                    if opcao_selecionada is None:
+                        break
+
+                    if self.lista_atividades[opcao_selecionada] not in atividades:
+                        atividades.append(self.lista_atividades[opcao_selecionada])
+                    else:
+                        print("Essa atividade já está na lista para cadastro.")
+                        input()
+
+                for atv in atividades:
+                    pessoa.atribuir_atividade(atv)
+
+            # ========== Atribuição de Meta ==========
+            idx = MenuSimples("Deseja cadastrar uma meta para a pessoa?", options=["Sim", "Não"]).choose(include_exit=False)
+            if idx == 0:
+                meta = ControllerMeta.cadastrar()
+                if meta is not None:
+                    pessoa.set_meta(meta)
 
             self.lista_pessoas.append(pessoa)
             return "Pessoa cadastrada com sucesso."

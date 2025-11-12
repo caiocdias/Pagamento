@@ -24,10 +24,11 @@ class Meta:
         if self.forma_pagamento in ("Excedente", "Fixo+Excedente"):
             self.set_fator_excedente(fator_excedente)
 
-        if self.valor_fixo in ("Fixo", "Fixo+Excedente"):
+        if self.forma_pagamento in ("Fixo", "Fixo+Excedente"):
             self.set_valor_fixo(valor_fixo)
 
-        self.set_fator_producao_total(fator_producao_total)
+        if self.forma_pagamento == "ProducaoTotal":
+            self.set_fator_producao_total(fator_producao_total)
 
     def set_meta(self, meta: float):
         self.meta = meta
