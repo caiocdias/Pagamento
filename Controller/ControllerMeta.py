@@ -30,7 +30,7 @@ class ControllerMeta:
                         break
                     colunas.append(coluna)
 
-            opcoes_forma_pagamento = ["Fixo", "Excedente", "Fixo+Excedente", "ProducaoTotal"]
+            opcoes_forma_pagamento = Meta.get_forma_pagamento_options()
             opcao_forma_pagamento_selecionada = MenuSimples("Forma de Pagamento", opcoes_forma_pagamento).choose(include_exit=False)
             forma_pagamento = opcoes_forma_pagamento[opcao_forma_pagamento_selecionada]
 
@@ -85,6 +85,10 @@ class ControllerMeta:
                     return "Meta alterada com sucesso."
 
                 case "Forma Pagamento":
+                    opcoes_forma_pagamento = Meta.get_forma_pagamento_options()
+                    opcao_forma_pagamento_selecionada = MenuSimples("Nova forma de Pagamento", opcoes_forma_pagamento).choose(include_exit=False)
+                    forma_pagamento = opcoes_forma_pagamento[opcao_forma_pagamento_selecionada]
+                    meta.set_forma_pagamento(forma_pagamento)
                     return "Meta alterada com sucesso."
 
                 case "Colunas US":
