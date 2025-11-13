@@ -46,8 +46,12 @@ class Pessoa:
             for a in self.lista_atividades
             if isinstance(a, Atividade)
         )
+
+        str1 = f"Nome: {self.nome}, Matrícula: {self.matricula}, Pix: {self.chave_pix}, Email: {self.email}, Atividades: [{atividades_fmt}]"
+        str2 = f"{str(self.meta)}" if self.meta is not None else ""
+
         return (
-            f"Nome: {self.nome}, Matrícula: {self.matricula}, Pix: {self.chave_pix}, Email: {self.email}, Atividades: [{atividades_fmt}]"
+            str1 + str2
         )
 
     def __eq__(self, other):
