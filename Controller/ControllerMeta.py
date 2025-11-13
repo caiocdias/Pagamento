@@ -55,10 +55,10 @@ class ControllerMeta:
         if not isinstance(meta, Meta):
             raise TypeError(f"Objeto meta é do tipo [{type(meta).__name__}] e não uma instância de Meta.")
 
-        opcoes_alterar = ["Meta", "Unidade", "Acoes", "Forma Pagamento"]
-        if meta.forma_pagamento in ("Excedente", "Fixo+Excedente"): opcoes_alterar.append("Fator Excedente")
-        if meta.forma_pagamento in ("Fixo", "Fixo+Excedente"): opcoes_alterar.append("Valor Fixo")
-        if meta.forma_pagamento == "ProducaoTotal": opcoes_alterar.append("Valor Produção Total")
+        opcoes_alterar = ["Meta", "Unidade", "Acoes", "Forma pagamento"]
+        if meta.forma_pagamento in ("Excedente", "Fixo+Excedente"): opcoes_alterar.append("Fator excedente")
+        if meta.forma_pagamento in ("Fixo", "Fixo+Excedente"): opcoes_alterar.append("Valor fixo")
+        if meta.forma_pagamento == "ProducaoTotal": opcoes_alterar.append("Valor produção total")
         if meta.unidade == "US": opcoes_alterar.append("Colunas US")
 
         idx_alterar = MenuSimples("Selecione o que deseja alterar", opcoes_alterar).choose(include_exit=True)
@@ -82,7 +82,7 @@ class ControllerMeta:
             case "Acoes":
                 return ControllerMeta._alterar_acoes(meta.acoes)
 
-            case "Forma Pagamento":
+            case "Forma pagamento":
                 opcoes_forma_pagamento = Meta.get_forma_pagamento_options()
                 opcao_forma_pagamento_selecionada = MenuSimples("Nova forma de Pagamento", opcoes_forma_pagamento).choose(include_exit=False)
                 forma_pagamento = opcoes_forma_pagamento[opcao_forma_pagamento_selecionada]
@@ -91,15 +91,15 @@ class ControllerMeta:
             case "Colunas US":
                 return ControllerMeta._alterar_colunas_us(meta.colunas_us)
 
-            case "Fator Excedente":
+            case "Fator excedente":
                 fator_excedente = read_float("Novo fator a ser pago por undiade excedente: ", 0)
                 meta.set_fator_excedente(fator_excedente)
 
-            case "Valor Fixo":
+            case "Valor fixo":
                 valor_fixo = read_float("Novo valor fixo a ser pago", 0)
                 meta.set_valor_fixo(valor_fixo)
 
-            case "Valor Produção Total":
+            case "Valor produção total":
                 fator_producao_total = read_float("Novo fator a ser pago pela produção total: ", 0)
                 meta.set_fator_producao_total(fator_producao_total)
 

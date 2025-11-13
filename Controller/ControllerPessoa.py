@@ -3,6 +3,8 @@ import pickle
 from Model import Pessoa
 from View import MenuSimples
 from Controller import ControllerMeta
+from main import controller_pessoas
+
 
 class ControllerPessoa:
     def __init__(self, lista_pessoas: list, lista_atividades: list):
@@ -81,7 +83,7 @@ class ControllerPessoa:
         if confirmar != 'y':
             return "Nenhuma pessoa foi alterada."
 
-        opcoes = ["Alterar nome", "Alterar matricula", "Alterar chave pix", "Alterar email", "Alterar atividades."]
+        opcoes = ["Alterar nome", "Alterar matricula", "Alterar chave pix", "Alterar email", "Alterar atividades", "Alterar meta", "Remover meta"]
         opcao_selecionada = MenuSimples("Selecione o atributo para alterar", opcoes).choose(include_exit=True)
 
         match opcao_selecionada:
@@ -99,6 +101,10 @@ class ControllerPessoa:
                 self.lista_pessoas[pessoa_selecionada].set_email(email)
             case 4:
                 self._alterar_atividade(pessoa_selecionada)
+            case 5:
+                print(ControllerMeta.alterar(self.lista_pessoas[pessoa_selecionada].meta))
+            case 6:
+                self.lista_pessoas[pessoa_selecionada].meta = None
             case _:
                 raise ValueError("Erro no atributo selecionado")
         return "Pessoa alterada com sucesso."
