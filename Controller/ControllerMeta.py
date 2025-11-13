@@ -111,14 +111,14 @@ class ControllerMeta:
 
     @staticmethod
     def _alterar_acoes(lista_acoes):
-        opcoes_alteracao = ["Adicionar Acao", "Remover Acao"]
+        opcoes_alteracao = ["Adicionar acao", "Remover acao"]
         idx = MenuSimples("Selecione o que deseja fazer com a lista de ações", opcoes_alteracao).choose(include_exit=True)
 
         if idx is None:
             return "Nenhum campo de meta foi alterado."
 
         match opcoes_alteracao[idx]:
-            case "Adicionar Acao":
+            case "Adicionar acao":
                 while True:
                     print(f"Ações atuais: {lista_acoes}")
                     nova_acao = input("Digite a nova ação para adicionar ou deixe vazio para sair: ")
@@ -133,7 +133,7 @@ class ControllerMeta:
 
                 return "Meta alterada com sucesso."
 
-            case "Remover Acao":
+            case "Remover acao":
                 while True:
                     for i, acao in enumerate(lista_acoes):
                         print(f"{i+1}- {acao}")
@@ -155,14 +155,14 @@ class ControllerMeta:
 
     @staticmethod
     def _alterar_colunas_us(colunas_us):
-        opcoes_alteracao = ["Adicionar Coluna", "Remover Coluna"]
+        opcoes_alteracao = ["Adicionar coluna", "Remover coluna"]
         idx = MenuSimples("Selecione o que deseja fazer com a lista de colunas de US", opcoes_alteracao).choose(include_exit=True)
 
         if idx is None:
             return "Nenhum campo de meta foi alterado."
 
         match opcoes_alteracao[idx]:
-            case "Adicionar Coluna":
+            case "Adicionar coluna":
                 while True:
                     print(f"Colunas atuais: {colunas_us}")
                     nova_coluna = input("Digite a nova coluna para adicionar ou deixe vazio para sair: ")
@@ -177,7 +177,7 @@ class ControllerMeta:
 
                 return "Meta alterada com sucesso."
 
-            case "Remover Coluna":
+            case "Remover coluna":
                 while True:
                     for i, coluna in enumerate(colunas_us):
                         print(f"{i+1}- {coluna}")
