@@ -89,6 +89,7 @@ class ControllerMeta:
                 meta.set_forma_pagamento(forma_pagamento)
 
             case "Colunas US":
+                return ControllerMeta._alterar_colunas_us(meta.colunas_us)
 
             case "Fator Excedente":
                 fator_excedente = read_float("Novo fator a ser pago por undiade excedente: ", 0)
@@ -146,6 +147,50 @@ class ControllerMeta:
                         raise ValueError("Valor fora do intervalo.")
 
                     lista_acoes.pop(remover-1)
+
+                return "Meta alterada com sucesso."
+
+            case _:
+                raise ValueError("Erro no index de alteração.")
+
+    @staticmethod
+    def _alterar_colunas_us(colunas_us):
+        opcoes_alteracao = ["Adicionar Coluna", "Remover Coluna"]
+        idx = MenuSimples("Selecione o que deseja fazer com a lista de colunas de US", opcoes_alteracao).choose(include_exit=True)
+
+        if idx is None:
+            return "Nenhum campo de meta foi alterado."
+
+        match opcoes_alteracao[idx]:
+            case "Adicionar Coluna":
+                while True:
+                    print(f"Colunas atuais: {colunas_us}")
+                    nova_coluna = input("Digite a nova coluna para adicionar ou deixe vazio para sair: ")
+
+                    if nova_coluna == "":
+                        break
+
+                    if nova_coluna in colunas_us:
+                        raise ValueError("Esta coluna já está na lista.")
+
+                    colunas_us.append(nova_coluna)
+
+                return "Meta alterada com sucesso."
+
+            case "Remover Coluna":
+                while True:
+                    for i, coluna in enumerate(colunas_us):
+                        print(f"{i+1}- {coluna}")
+
+                    remover = int(input("Digite o indexador da coluna a ser removida ou deixe vazio para sair: "))
+
+                    if remover == "":
+                        break
+
+                    if remover < 1 or remover > len(colunas_us):
+                        raise ValueError("Valor fora do intervalo.")
+
+                    colunas_us.pop(remover-1)
 
                 return "Meta alterada com sucesso."
 
