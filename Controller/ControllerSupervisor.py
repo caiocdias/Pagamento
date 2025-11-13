@@ -12,96 +12,85 @@ class ControllerSupervisor:
         return MenuSimples("Menu de Gerenciamento de Supervisores", opcoes).choose(include_exit=True)
 
     def cadastrar(self):
-        try:
-            nome = input("Digite o nome do supervisor: ")
-            matricula = input("Digite a mátricula: ")
-            email = input("Digite o email: ")
-            pasta = input("Digite o caminho da pasta do supervisor: ")
+        nome = input("Digite o nome do supervisor: ")
+        matricula = input("Digite a mátricula: ")
+        email = input("Digite o email: ")
+        pasta = input("Digite o caminho da pasta do supervisor: ")
 
-            opcoes_pessoas = [str(pessoa) for pessoa in self.lista_pessoas]
-            pessoas = []
+        opcoes_pessoas = [str(pessoa) for pessoa in self.lista_pessoas]
+        pessoas = []
 
-            while True:
-                opcao_selecionada = MenuSimples("Pessoa para atribuir", opcoes_pessoas).choose(include_exit=True)
+        while True:
+            opcao_selecionada = MenuSimples("Pessoa para atribuir", opcoes_pessoas).choose(include_exit=True)
 
-                if opcao_selecionada is None:
-                    break
+            if opcao_selecionada is None:
+                break
 
-                if self.lista_pessoas[opcao_selecionada] not in pessoas:
-                    pessoas.append(self.lista_pessoas[opcao_selecionada])
-                else:
-                    print("Essa pessoa já está na lista para associação.")
-                    input()
+            if self.lista_pessoas[opcao_selecionada] not in pessoas:
+                pessoas.append(self.lista_pessoas[opcao_selecionada])
+            else:
+                print("Essa pessoa já está na lista para associação.")
+                input()
 
-            supervisor = Supervisor(nome, matricula, email, pasta)
-            for pessoa in pessoas:
-                supervisor.atribuir_pessoa(pessoa)
+        supervisor = Supervisor(nome, matricula, email, pasta)
+        for pessoa in pessoas:
+            supervisor.atribuir_pessoa(pessoa)
 
-            self.lista_supervisores.append(supervisor)
-            return "Supervisor cadastrado com sucesso."
-
-        except Exception as e:
-            return f"Erro ao cadastrar supervisor. {str(e)}"
+        self.lista_supervisores.append(supervisor)
+        return "Supervisor cadastrado com sucesso."
 
     def remover(self):
-        try:
-            if len(self.lista_supervisores) == 0:
-                raise Exception("Não há supervisores cadastrados.")
+        if len(self.lista_supervisores) == 0:
+            raise Exception("Não há supervisores cadastrados.")
 
-            supervisor_selecionado = self.listar("Selecione o supervisor para remover", choose_flag=True)
+        supervisor_selecionado = self.listar("Selecione o supervisor para remover", choose_flag=True)
 
-            if supervisor_selecionado is None:
-                return "Nenhum supervisor foi removido."
+        if supervisor_selecionado is None:
+            return "Nenhum supervisor foi removido."
 
-            confirmar = input("Tem certeza que deseja remover o supervisor? (y): ").lower()
+        confirmar = input("Tem certeza que deseja remover o supervisor? (y): ").lower()
 
-            if confirmar != 'y':
-                return "Nenhum supervisor foi removido."
+        if confirmar != 'y':
+            return "Nenhum supervisor foi removido."
 
-            self.lista_supervisores.pop(supervisor_selecionado)
+        self.lista_supervisores.pop(supervisor_selecionado)
 
-            return "Supervisor removido com sucesso."
-
-        except Exception as e:
-            return f"Erro ao remover Supervisor. {str(e)}"
+        return "Supervisor removido com sucesso."
 
     def alterar(self):
-        try:
-            if len(self.lista_supervisores) == 0:
-                raise Exception("Não há supervisores cadastradas.")
+        if len(self.lista_supervisores) == 0:
+            raise Exception("Não há supervisores cadastradas.")
 
-            supervisor_selecionado = self.listar("Selecione o supervisor para alterar", choose_flag=True)
+        supervisor_selecionado = self.listar("Selecione o supervisor para alterar", choose_flag=True)
 
-            if supervisor_selecionado is None:
-                return "Nenhuma supervisor foi alterado."
+        if supervisor_selecionado is None:
+            return "Nenhuma supervisor foi alterado."
 
-            confirmar = input("Tem certeza que deseja alterar a supervisor? (y): ").lower()
-            if confirmar != 'y':
-                return "Nenhuma supervisor foi alterado."
+        confirmar = input("Tem certeza que deseja alterar a supervisor? (y): ").lower()
+        if confirmar != 'y':
+            return "Nenhuma supervisor foi alterado."
 
-            opcoes = ["Alterar nome", "Alterar matricula", "Alterar email", "Alterar pasta","Alterar pessoas."]
-            opcao_selecionada = MenuSimples("Selecione o atributo para alterar", opcoes).choose(include_exit=True)
+        opcoes = ["Alterar nome", "Alterar matricula", "Alterar email", "Alterar pasta","Alterar pessoas."]
+        opcao_selecionada = MenuSimples("Selecione o atributo para alterar", opcoes).choose(include_exit=True)
 
-            match opcao_selecionada:
-                case 0:
-                    nome = input("Digite o novo nome: ")
-                    self.lista_supervisores[supervisor_selecionado].set_nome(nome)
-                case 1:
-                    matricula = input("Digite a nova mátricula: ")
-                    self.lista_supervisores[supervisor_selecionado].set_matricula(matricula)
-                case 2:
-                    email = input("Digite o novo email: ")
-                    self.lista_supervisores[supervisor_selecionado].set_email(email)
-                case 3:
-                    pasta = input("Digite a nova pasta: ")
-                    self.lista_supervisores[supervisor_selecionado].set_pasta(pasta)
-                case 4:
-                    self._alterar_pessoas(supervisor_selecionado)
-                case _:
-                    raise ValueError("Erro no atributo selecionado")
-            return "Supervisor alterada com sucesso."
-        except Exception as e:
-            return f"\nErro ao alterar pessoa. {str(e)}"
+        match opcao_selecionada:
+            case 0:
+                nome = input("Digite o novo nome: ")
+                self.lista_supervisores[supervisor_selecionado].set_nome(nome)
+            case 1:
+                matricula = input("Digite a nova mátricula: ")
+                self.lista_supervisores[supervisor_selecionado].set_matricula(matricula)
+            case 2:
+                email = input("Digite o novo email: ")
+                self.lista_supervisores[supervisor_selecionado].set_email(email)
+            case 3:
+                pasta = input("Digite a nova pasta: ")
+                self.lista_supervisores[supervisor_selecionado].set_pasta(pasta)
+            case 4:
+                self._alterar_pessoas(supervisor_selecionado)
+            case _:
+                raise ValueError("Erro no atributo selecionado")
+        return "Supervisor alterada com sucesso."
 
     def _alterar_pessoas(self, supervisor_selecionado):
         while True:
@@ -143,24 +132,18 @@ class ControllerSupervisor:
                     raise ValueError("Erro no atributo selecionado")
 
     def salvar(self):
-        try:
-            path = ".\\compressed_data\\lista_supervisores.pkl"
-            with open(path, 'wb') as file:
-                pickle.dump(self.lista_supervisores, file)
-            return "Arquivo de supervisores salvo sucesso."
-        except Exception as e:
-            return f"Erro ao salvar o arquivo de supervisores. {str(e)}"
+        path = ".\\compressed_data\\lista_supervisores.pkl"
+        with open(path, 'wb') as file:
+            pickle.dump(self.lista_supervisores, file)
+        return "Arquivo de supervisores salvo sucesso."
 
     def carregar(self):
-        try:
-            if os.path.isfile(".\\compressed_data\\lista_supervisores.pkl"):
-                path = ".\\compressed_data\\lista_supervisores.pkl"
-                with open(path, 'rb') as file:
-                    self.lista_supervisores = pickle.load(file)
-                return "Arquivo de supervisores carregado com sucesso"
-            raise FileNotFoundError("O arquivo não existe.")
-        except Exception as e:
-            return f"Erro ao carregar o arquivo de supervisores. {str(e)}"
+        if os.path.isfile(".\\compressed_data\\lista_supervisores.pkl"):
+            path = ".\\compressed_data\\lista_supervisores.pkl"
+            with open(path, 'rb') as file:
+                self.lista_supervisores = pickle.load(file)
+            return "Arquivo de supervisores carregado com sucesso"
+        raise FileNotFoundError("O arquivo não existe.")
 
     def listar(self, title: str, choose_flag: bool = False):
         if len(self.lista_supervisores) == 0:

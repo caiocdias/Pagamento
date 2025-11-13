@@ -1,4 +1,5 @@
-﻿from datetime import datetime
+﻿import traceback
+from datetime import datetime
 from Generic import *
 from Controller import ControllerAtividade, ControllerPessoa, ControllerSupervisor
 from Controller.ControllerAcoesConcGmax import ControllerAcoesConcGmax
@@ -131,3 +132,5 @@ while True:
 
     except Exception as e:
         print(f"Erro na iteração principal. {str(e)}")
+        traceback.print_exc()
+        input()
