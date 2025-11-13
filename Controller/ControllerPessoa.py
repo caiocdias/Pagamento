@@ -3,7 +3,6 @@ import pickle
 from Model import Pessoa
 from View import MenuSimples
 from Controller import ControllerMeta
-from main import controller_pessoas
 
 
 class ControllerPessoa:
@@ -121,18 +120,24 @@ class ControllerPessoa:
         return None
 
     def salvar(self):
-        path = ".\\compressed_data\\lista_pessoas.pkl"
-        with open(path, 'wb') as file:
-            pickle.dump(self.lista_pessoas, file)
-        return "Arquivo de pessoas salvo sucesso."
+        try:
+            path = ".\\compressed_data\\lista_pessoas.pkl"
+            with open(path, 'wb') as file:
+                pickle.dump(self.lista_pessoas, file)
+            return "Arquivo de pessoas salvo sucesso."
+        except Exception as e:
+            return f"Erro ao salvar arquivo. {str(e)}"
 
     def carregar(self):
-        if os.path.isfile(".\\compressed_data\\lista_pessoas.pkl"):
-            path = ".\\compressed_data\\lista_pessoas.pkl"
-            with open(path, 'rb') as file:
-                self.lista_pessoas = pickle.load(file)
-            return "Arquivo de pessoas carregado com sucesso"
-        raise FileNotFoundError("O arquivo não existe.")
+        try:
+            if os.path.isfile(".\\compressed_data\\lista_pessoas.pkl"):
+                path = ".\\compressed_data\\lista_pessoas.pkl"
+                with open(path, 'rb') as file:
+                    self.lista_pessoas = pickle.load(file)
+                return "Arquivo de pessoas carregado com sucesso"
+            raise FileNotFoundError("O arquivo não existe.")
+        except Exception as e:
+            return f"Erro ao carregar arquivo. {str(e)}"
 
 
     def _alterar_atividade(self, pessoa_selecionada):

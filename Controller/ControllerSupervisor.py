@@ -132,18 +132,24 @@ class ControllerSupervisor:
                     raise ValueError("Erro no atributo selecionado")
 
     def salvar(self):
-        path = ".\\compressed_data\\lista_supervisores.pkl"
-        with open(path, 'wb') as file:
-            pickle.dump(self.lista_supervisores, file)
-        return "Arquivo de supervisores salvo sucesso."
+        try:
+            path = ".\\compressed_data\\lista_supervisores.pkl"
+            with open(path, 'wb') as file:
+                pickle.dump(self.lista_supervisores, file)
+            return "Arquivo de supervisores salvo sucesso."
+        except Exception as e:
+            return f"Erro ao salvar arquivo. {str(e)}"
 
     def carregar(self):
-        if os.path.isfile(".\\compressed_data\\lista_supervisores.pkl"):
-            path = ".\\compressed_data\\lista_supervisores.pkl"
-            with open(path, 'rb') as file:
-                self.lista_supervisores = pickle.load(file)
-            return "Arquivo de supervisores carregado com sucesso"
-        raise FileNotFoundError("O arquivo não existe.")
+        try:
+            if os.path.isfile(".\\compressed_data\\lista_supervisores.pkl"):
+                path = ".\\compressed_data\\lista_supervisores.pkl"
+                with open(path, 'rb') as file:
+                    self.lista_supervisores = pickle.load(file)
+                return "Arquivo de supervisores carregado com sucesso"
+            raise FileNotFoundError("O arquivo não existe.")
+        except Exception as e:
+            return f"Erro ao carregar arquivo. {str(e)}"
 
     def listar(self, title: str, choose_flag: bool = False):
         if len(self.lista_supervisores) == 0:

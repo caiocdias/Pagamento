@@ -104,15 +104,21 @@ class ControllerAtividade:
         return None
 
     def salvar(self):
-        path = ".\\compressed_data\\lista_atividades.pkl"
-        with open(path, 'wb') as file:
-            pickle.dump(self.lista_atividades, file)
-        return "Arquivo de atividades salvo com sucesso."
+        try:
+            path = ".\\compressed_data\\lista_atividades.pkl"
+            with open(path, 'wb') as file:
+                pickle.dump(self.lista_atividades, file)
+            return "Arquivo de atividades salvo com sucesso."
+        except Exception as e:
+            return f"Erro ao salvar arquivo. {str(e)}"
 
     def carregar(self):
-        if os.path.isfile(".\\compressed_data\\lista_atividades.pkl"):
-            path = ".\\compressed_data\\lista_atividades.pkl"
-            with open(path, 'rb') as file:
-                self.lista_atividades = pickle.load(file)
-            return "Arquivo de atividades carregado com sucesso."
-        raise FileNotFoundError("O arquivo não existe.")
+        try:
+            if os.path.isfile(".\\compressed_data\\lista_atividades.pkl"):
+                path = ".\\compressed_data\\lista_atividades.pkl"
+                with open(path, 'rb') as file:
+                    self.lista_atividades = pickle.load(file)
+                return "Arquivo de atividades carregado com sucesso."
+            raise FileNotFoundError("O arquivo não existe.")
+        except Exception as e:
+            return f"Erro ao salvar arquivo. {str(e)}"

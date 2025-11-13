@@ -104,10 +104,6 @@ class ControllerAcoesConcGmax:
 
         return "Relação exportada com sucesso."
 
-
-
-
-
     def gerar_producao_por_supervisor(self, lista_supervisores: list):
         cols_soma = ["ACOES_QTD_US_INTERNA", "ACOES_QTD_US_TOP", "ACOES_QTD_US_PRJ", "ACOES_QTD_US_GEO"]
 
