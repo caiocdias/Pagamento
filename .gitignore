@@ -3,3 +3,9 @@
 venv/
 compressed_data/
 exported_data/
+__pycache__/
+Controller/__pycache__/
+Data/__pycache__/
+Model/__pycache__/
+View/__pycache__/
+Generic/__pycache__/
