@@ -201,3 +201,73 @@ class ControllerAcoesConcGmax:
                 Utils._exportar_xlsx(planilhas, self.start_date, self.end_date, pasta_out=pasta_out)
 
         return "Relação por supervisor exportada com sucesso."
+
+    def gerar_pagamento_metas(self):
+        df_src = self.AcoesConcGmax.dataframe
+
+        for pessoa in self.lista_pessoas:
+            meta = getattr(pessoa, "meta", None)
+            if meta is None:
+                continue
+
+            # Filtra ações da meta para a pessoa
+            df_pessoa = df_src[
+                (df_src["USUARIOS_NOM"].eq(pessoa.nome)) &
+                (df_src["TACOES_DES"].isin(meta.acoes))
+            ].copy()
+
+            if df_pessoa.empty:
+                continue
+
+            # DataFrame de detalhamento da produção (por extenso)
+            cols_base = ["NOTAS_NUM_NS", "TSERVICOS_CT_COD", "TACOES_DES", "ACOES_DAT_CONCLUSAO"]
+            cols_extra = []
+
+            # Se a unidade da meta for US, utilizamos as colunas de US configuradas na meta
+            for col in getattr(meta, "colunas_us", []) or []:
+                if col in df_pessoa.columns:
+                    cols_extra.append(col)
+
+            df_detalhe = df_pessoa[cols_base + cols_extra].copy()
+
+            rename_cols = {
+                "NOTAS_NUM_NS": "NS",
+                "TSERVICOS_CT_COD": "Serviço",
+                "TACOES_DES": "Ação",
+                "ACOES_DAT_CONCLUSAO": "Conclusão",
+            }
+            df_detalhe = df_detalhe.rename(columns=rename_cols)
+
+            # Produção em função da unidade da meta
+            if meta.unidade == "NS":
+                # quantidade de registros (cada ação nas ações da meta)
+                producao_total = float(len(df_pessoa))
+            elif meta.unidade == "US":
+                producao_total = 0.0
+                for col in meta.colunas_us:
+                    if col in df_pessoa.columns:
+                        producao_total += (
+                            pd.to_numeric(df_pessoa[col], errors="coerce")
+                            .fillna(0)
+                            .sum()
+                        )
+            else:
+                # Unidade inválida (não deve acontecer, é validada em Meta)
+                continue
+
+            # Calcula valor a pagar conforme forma de pagamento
+            valor_pagamento = meta.calcular_pagamento(producao_total)
+
+            # Gera PDF de meta para a pessoa, incluindo o detalhamento da produção
+            Utils._exportar_pdf_meta(
+                pessoa,
+                meta,
+                producao_total,
+                valor_pagamento,
+                self.start_date,
+                self.end_date,
+                df_producao=df_detalhe,
+                pasta_out=".\\exported_data"
+            )
+
+        return "Relatórios de metas exportados com sucesso."

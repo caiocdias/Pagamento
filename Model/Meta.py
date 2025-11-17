@@ -90,6 +90,37 @@ class Meta:
     def get_forma_pagamento_options():
         return ["Fixo", "Excedente", "Fixo+Excedente", "ProducaoTotal"]
 
+    def calcular_pagamento(self, producao: float) -> float:
+        """
+        Calcula o valor a pagar dado a produção na unidade da meta.
+        Só paga se a produção atingiu a meta.
+        """
+        if producao is None:
+            return 0.0
+
+        producao = float(producao)
+        meta_val = float(self.meta or 0)
+
+        if producao < meta_val:
+            return 0.0
+
+        excedente = max(0.0, producao - meta_val)
+        forma = self.forma_pagamento
+
+        if forma == "Fixo":
+            return float(self.valor_fixo or 0)
+
+        if forma == "Excedente":
+            return float(self.fator_excedente or 0) * excedente
+
+        if forma == "Fixo+Excedente":
+            return float(self.valor_fixo or 0) + float(self.fator_excedente or 0) * excedente
+
+        if forma == "ProducaoTotal":
+            return float(self.fator_producao_total or 0) * producao
+
+        return 0.0
+
     def __str__(self):
         str1 = f"Meta: {self.meta} {self.unidade}. Forma de Pagamento: {self.forma_pagamento}"
         str2 = f", Fator excedente: {self.fator_excedente}" if self.forma_pagamento in ("Excedente", "Fixo+Excedente") else ""

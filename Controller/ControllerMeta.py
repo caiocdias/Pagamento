@@ -24,7 +24,7 @@ class ControllerMeta:
         colunas = []
         if unidade == "US":
             while True:
-                coluna = input("Digite a coluna para , deixe vazio para sair: ")
+                coluna = input("Digite a coluna para contabilizar a US, deixe vazio para sair: ")
                 if coluna == "":
                     break
                 colunas.append(coluna)

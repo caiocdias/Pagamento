@@ -328,3 +328,156 @@ def _exportar_xlsx(planilhas: dict, start_date, end_date, pasta_out=".\\exported
         })
 
     return caminho
+
+def _exportar_pdf_meta(pessoa, meta, producao_total, valor_pagamento, start_date, end_date, df_producao=None, pasta_out=".\\exported_data"):
+    os.makedirs(pasta_out, exist_ok=True)
+    arq = os.path.join(pasta_out, f"{_safe_filename(pessoa.nome)}_meta.pdf")
+
+    doc = SimpleDocTemplate(
+        arq,
+        pagesize=landscape(A4),
+        leftMargin=1.5 * cm, rightMargin=1.5 * cm,
+        topMargin=1.5 * cm, bottomMargin=1.2 * cm
+    )
+    styles = getSampleStyleSheet()
+    story = []
+
+    # Cabeçalho
+    titulo = Paragraph("<b>Relatório de Meta</b>", styles["Title"])
+    periodo = f"{start_date:%d/%m/%Y} a {end_date:%d/%m/%Y}"
+    info = Paragraph(
+        f"<b>Nome:</b> {pessoa.nome}<br/>"
+        f"<b>Email:</b> {pessoa.email}<br/>"
+        f"<b>Chave Pix:</b> {pessoa.chave_pix}<br/>"
+        f"<b>Período:</b> {periodo}",
+        styles["Normal"]
+    )
+    story.extend([titulo, Spacer(1, 0.25 * cm), info, Spacer(1, 0.6 * cm)])
+
+    bateu_meta = producao_total >= float(meta.meta or 0)
+    excedente = max(0.0, producao_total - float(meta.meta or 0))
+
+    # Descrição da meta (usa __str__ da Meta)
+    descr_meta = Paragraph(f"<b>Descrição da meta:</b> {meta}", styles["Italic"])
+    story.extend([descr_meta, Spacer(1, 0.4 * cm)])
+
+    # Tabela de resumo
+    header = [
+        "Meta",
+        "Unidade",
+        "Produção",
+        "Excedente",
+        "Bateu Meta",
+        "Forma Pagamento",
+        "Valor a Pagar",
+    ]
+    row = [
+        f"{float(meta.meta):.2f}",
+        meta.unidade,
+        f"{float(producao_total):.2f}",
+        f"{float(excedente):.2f}",
+        "Sim" if bateu_meta else "Não",
+        meta.forma_pagamento,
+        _fmt_brl(valor_pagamento),
+    ]
+    data = [header, row]
+
+    tbl = Table(data, repeatRows=1)
+
+    table_style = [
+        ("BACKGROUND", (0, 0), (-1, 0), colors.lightgrey),
+        ("TEXTCOLOR", (0, 0), (-1, 0), colors.black),
+        ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
+        ("BOTTOMPADDING", (0, 0), (-1, 0), 6),
+        ("GRID", (0, 0), (-1, -1), 0.25, colors.grey),
+        ("ALIGN", (0, 0), (-1, -1), "LEFT"),
+        ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
+    ]
+
+    # Alinha numéricos/moeda à direita
+    for j in [0, 2, 3, 6]:
+        table_style.append(("ALIGN", (j, 1), (j, 1), "RIGHT"))
+
+    tbl.setStyle(TableStyle(table_style))
+    story.extend([tbl, Spacer(1, 0.5 * cm)])
+
+    # ================== DETALHAMENTO DA PRODUÇÃO ==================
+    if df_producao is not None and not df_producao.empty:
+        cab = Paragraph("<b>Detalhamento da produção considerada na meta</b>", styles["Heading2"])
+        story.extend([cab, Spacer(1, 0.25 * cm)])
+
+        df_fmt = df_producao.copy()
+
+        # Conclusão em dd/mm/aaaa
+        if "Conclusão" in df_fmt.columns:
+            df_fmt["Conclusão"] = pd.to_datetime(df_fmt["Conclusão"], errors="coerce").dt.strftime("%d/%m/%Y")
+
+        # Quebra de linha automática para Ação
+        if "Ação" in df_fmt.columns:
+            df_fmt["Ação"] = df_fmt["Ação"].apply(lambda x: Paragraph(str(x), styles["Normal"]))
+
+        # Formata numéricos com 2 casas
+        for col in df_fmt.columns:
+            if col == "Conclusão":
+                continue
+            if pd.api.types.is_numeric_dtype(df_fmt[col]):
+                df_fmt[col] = pd.to_numeric(df_fmt[col], errors="coerce").map(
+                    lambda v: "" if pd.isna(v) else f"{v:.2f}"
+                )
+
+        # Outras datetimes (se houver) ficam com data+hora
+        dt_cols = [c for c in df_fmt.select_dtypes(include=["datetime64[ns]", "datetimetz"]).columns
+                   if c != "Conclusão"]
+        for c in dt_cols:
+            df_fmt[c] = df_fmt[c].dt.strftime("%d/%m/%Y %H:%M")
+
+        df_fmt = df_fmt.fillna("")
+
+        header_det = list(df_fmt.columns)
+        rows_det = []
+        for _, row in df_fmt.iterrows():
+            cells = []
+            for cell in row:
+                if isinstance(cell, Paragraph):
+                    cells.append(cell)
+                else:
+                    cells.append("" if pd.isna(cell) else str(cell))
+            rows_det.append(cells)
+
+        data_det = [header_det] + rows_det
+
+        num_cols = len(header_det)
+        avail_width = landscape(A4)[0] - (doc.leftMargin + doc.rightMargin)
+
+        # Larguras: divide igualmente e dá mais espaço pra coluna Ação
+        col_widths = [avail_width / max(1, num_cols)] * num_cols
+        if "Ação" in header_det and num_cols > 1:
+            j_acao = header_det.index("Ação")
+            acao_w = avail_width * 0.35
+            other_w = (avail_width - acao_w) / (num_cols - 1)
+            col_widths = [other_w] * num_cols
+            col_widths[j_acao] = acao_w
+
+        tbl_det = Table(data_det, colWidths=col_widths, repeatRows=1)
+
+        style_det = [
+            ("BACKGROUND", (0, 0), (-1, 0), colors.lightgrey),
+            ("TEXTCOLOR", (0, 0), (-1, 0), colors.black),
+            ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
+            ("BOTTOMPADDING", (0, 0), (-1, 0), 6),
+            ("GRID", (0, 0), (-1, -1), 0.25, colors.grey),
+            ("ALIGN", (0, 0), (-1, -1), "LEFT"),
+            ("VALIGN", (0, 0), (-1, -1), "TOP"),
+        ]
+
+        # Alinha à direita colunas numéricas
+        for j, col in enumerate(header_det):
+            if col not in ("NS", "Serviço", "Ação", "Conclusão") and col in df_producao.columns:
+                if pd.api.types.is_numeric_dtype(df_producao[col]):
+                    style_det.append(("ALIGN", (j, 1), (j, -1), "RIGHT"))
+
+        tbl_det.setStyle(TableStyle(style_det))
+        story.extend([tbl_det, Spacer(1, 0.5 * cm)])
+
+    doc.build(story)
+    return arq
