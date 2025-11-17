@@ -1,4 +1,6 @@
-﻿import traceback
+﻿# main.py
+
+import traceback
 from datetime import datetime
 from Controller import ControllerAtividade, ControllerPessoa, ControllerSupervisor
 from Controller.ControllerAcoesConcGmax import ControllerAcoesConcGmax
@@ -78,26 +80,28 @@ while True:
                             raise ValueError("Erro no atributo selecionado")
 
             case 2:
-                opcao_menu = controller_supervisores.menu_principal()
-                match opcao_menu:
-                    case 0:
-                        print(controller_supervisores.cadastrar())
-                        input()
-                    case 1:
-                        print(controller_supervisores.remover())
-                        input()
-                    case 2:
-                        print(controller_supervisores.alterar())
-                        input()
-                    case 3:
-                        controller_supervisores.listar("Pessoas cadastradas", choose_flag=False)
-                        input()
-                    case None:
-                        print("Retornando ao menu principal.")
-                        input()
-                        break
-                    case _:
-                        raise ValueError("Erro no atributo selecionado")
+                while True:
+                    opcao_menu = controller_supervisores.menu_principal()
+                    match opcao_menu:
+                        case 0:
+                            print(controller_supervisores.cadastrar())
+                            input()
+                        case 1:
+                            print(controller_supervisores.remover())
+                            input()
+                        case 2:
+                            print(controller_supervisores.alterar())
+                            input()
+                        case 3:
+                            controller_supervisores.listar("Pessoas cadastradas", choose_flag=False)
+                            input()
+                        case None:
+                            print("Retornando ao menu principal.")
+                            input()
+                            break
+                        case _:
+                            raise ValueError("Erro no atributo selecionado")
+
             case 3:
                 start_date = datetime.strptime(input("Entre com a data inicial (dd/mm/aaaa): "), "%d/%m/%Y")
                 end_date = datetime.strptime(input("Entre com a data final (dd/mm/aaaa): "), "%d/%m/%Y")
@@ -116,7 +120,8 @@ while True:
                     raise ValueError("Data de início deve ser anterior à data final.")
 
                 controller_acoes_conc_gmax = ControllerAcoesConcGmax(controller_pessoas.lista_pessoas, start_date, end_date)
-                print(controller_acoes_conc_gmax.gerar_pagamento_metas())
+                # AGORA: metas também geradas nas pastas dos supervisores (por período)
+                print(controller_acoes_conc_gmax.gerar_pagamento_metas(controller_supervisores.lista_supervisores))
 
             case 5:
                 retorno_salvar_atividades = controller_atividades.salvar()

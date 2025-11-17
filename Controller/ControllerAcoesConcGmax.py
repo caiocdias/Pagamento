@@ -1,11 +1,14 @@
-﻿import datetime
+﻿# ControllerAcoesConcGmax.py
+
+import datetime
 from Generic import Utils
 from Model import AcoesConcGmax
 import pandas as pd
 import os
 
+
 class ControllerAcoesConcGmax:
-    def __init__(self, lista_pessoas : list, start_date, end_date):
+    def __init__(self, lista_pessoas: list, start_date, end_date):
         self.start_date = start_date
         self.end_date = end_date
         self.lista_pessoas = lista_pessoas
@@ -34,16 +37,15 @@ class ControllerAcoesConcGmax:
             return serie_total
 
         planilhas = {}
+        df_src = self.AcoesConcGmax.dataframe
 
         for pessoa in self.lista_pessoas:
-            df_src = self.AcoesConcGmax.dataframe
             dfs_por_atv = []
 
             if len(pessoa.lista_atividades) == 0:
                 continue
 
             for atv in pessoa.lista_atividades:
-
                 mask = (df_src["TACOES_DES"].eq(atv.acao)) & (df_src["USUARIOS_NOM"].eq(pessoa.nome))
                 df_atv = df_src[mask].copy()
                 if df_atv.empty:
@@ -202,8 +204,19 @@ class ControllerAcoesConcGmax:
 
         return "Relação por supervisor exportada com sucesso."
 
-    def gerar_pagamento_metas(self):
+# ControllerAcoesConcGmax.py
+
+    def gerar_pagamento_metas(self, lista_supervisores=None):
         df_src = self.AcoesConcGmax.dataframe
+
+        # Mapa: matricula da pessoa -> [supervisores]
+        mapa_pessoa_sup = {}
+        if lista_supervisores:
+            for supervisor in (lista_supervisores or []):
+                for pessoa_sup in getattr(supervisor, "lista_pessoas", []) or []:
+                    mat = getattr(pessoa_sup, "matricula", None)
+                    if mat:
+                        mapa_pessoa_sup.setdefault(mat, []).append(supervisor)
 
         for pessoa in self.lista_pessoas:
             meta = getattr(pessoa, "meta", None)
@@ -244,7 +257,7 @@ class ControllerAcoesConcGmax:
                 producao_total = float(len(df_pessoa))
             elif meta.unidade == "US":
                 producao_total = 0.0
-                for col in meta.colunas_us:
+                for col in getattr(meta, "colunas_us", []) or []:
                     if col in df_pessoa.columns:
                         producao_total += (
                             pd.to_numeric(df_pessoa[col], errors="coerce")
@@ -258,7 +271,7 @@ class ControllerAcoesConcGmax:
             # Calcula valor a pagar conforme forma de pagamento
             valor_pagamento = meta.calcular_pagamento(producao_total)
 
-            # Gera PDF de meta para a pessoa, incluindo o detalhamento da produção
+            # 1) PDF geral na pasta padrão
             Utils._exportar_pdf_meta(
                 pessoa,
                 meta,
@@ -270,4 +283,24 @@ class ControllerAcoesConcGmax:
                 pasta_out=".\\exported_data"
             )
 
+            # 2) PDF na(s) pasta(s) do(s) supervisor(es) da pessoa, por período
+            mat = getattr(pessoa, "matricula", None)
+            supervisores_pessoa = mapa_pessoa_sup.get(mat, [])
+            for supervisor in supervisores_pessoa:
+                periodo = f"{self.start_date:%Y-%m-%d}_a_{self.end_date:%Y-%m-%d}"
+                pasta_out_sup = os.path.join(supervisor.pasta, periodo)
+                os.makedirs(pasta_out_sup, exist_ok=True)
+
+                Utils._exportar_pdf_meta(
+                    pessoa,
+                    meta,
+                    producao_total,
+                    valor_pagamento,
+                    self.start_date,
+                    self.end_date,
+                    df_producao=df_detalhe,
+                    pasta_out=pasta_out_sup
+                )
+
         return "Relatórios de metas exportados com sucesso."
+
