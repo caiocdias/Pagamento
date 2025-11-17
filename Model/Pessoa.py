@@ -48,7 +48,7 @@ class Pessoa:
         )
 
         str1 = f"Nome: {self.nome}, Matrícula: {self.matricula}, Pix: {self.chave_pix}, Email: {self.email}, Atividades: [{atividades_fmt}]"
-        str2 = f"{str(self.meta)}" if self.meta is not None else ""
+        str2 = f"\n\t{str(self.meta)}" if self.meta is not None else ""
 
         return (
             str1 + str2

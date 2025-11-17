@@ -1,6 +1,4 @@
-﻿from shutil import make_archive
-
-from View import MenuSimples
+﻿from View import MenuSimples
 from Model import Meta
 from Generic import read_float
 
@@ -41,7 +39,7 @@ class ControllerMeta:
 
         valor_fixo = None
         if forma_pagamento in ("Fixo", "Fixo+Excedente"):
-            valor_fixo = read_float("Valor fixo a ser pago", 0)
+            valor_fixo = read_float("Valor fixo a ser pago: ", 0)
 
         fator_producao_total = None
         if forma_pagamento == "ProducaoTotal":

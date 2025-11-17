@@ -2,7 +2,7 @@
 import pickle
 from Model import Pessoa
 from View import MenuSimples
-from Controller import ControllerMeta
+from Controller.ControllerMeta import ControllerMeta
 
 
 class ControllerPessoa:
