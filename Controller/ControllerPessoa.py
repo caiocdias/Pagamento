@@ -15,14 +15,12 @@ class ControllerPessoa:
         return MenuSimples("Menu de Gerenciamento de Pessoas", opcoes).choose(include_exit=True)
 
     def cadastrar(self):
-        # ========== Cadastro da Pessoa ==========
         nome = input("Digite o nome da pessoa: ")
         matricula = input("Digite a mátricula: ")
         chave_pix = input("Digite a chave pix: ")
         email = input("Digite o email: ")
         pessoa = Pessoa(nome, matricula, chave_pix, email)
 
-        # ========== Atribuição de Atividade ==========
         idx = MenuSimples("Deseja cadastrar atividades (FH e Freelancer) para a pessoa?", options=["Sim", "Não"]).choose(include_exit=False)
         if idx == 0:
             opcoes_atividade = [str(atv) for atv in self.lista_atividades]
@@ -42,7 +40,6 @@ class ControllerPessoa:
             for atv in atividades:
                 pessoa.atribuir_atividade(atv)
 
-        # ========== Atribuição de Meta ==========
         idx = MenuSimples("Deseja cadastrar uma meta para a pessoa?", options=["Sim", "Não"]).choose(include_exit=False)
         if idx == 0:
             meta = ControllerMeta.cadastrar()
@@ -191,12 +188,12 @@ class ControllerPessoa:
                 tuple(atv.acao_comparar or []),
             )
 
-        mapa = {_key(a): a for a in self.lista_atividades}  # MASTER: atividades válidas
+        mapa = {_key(a): a for a in self.lista_atividades}
 
         for pessoa in self.lista_pessoas:
             novas = []
             for atv in pessoa.lista_atividades:
                 ref = mapa.get(_key(atv))
-                if ref is not None:  # mantém só quem existe no master
+                if ref is not None:
                     novas.append(ref)
             pessoa.lista_atividades = novas

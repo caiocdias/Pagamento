@@ -1,6 +1,4 @@
-﻿# ControllerAcoesConcGmax.py
-
-import datetime
+﻿import datetime
 from Generic import Utils
 from Model import AcoesConcGmax
 import pandas as pd
@@ -129,14 +127,12 @@ class ControllerAcoesConcGmax:
         df_src = self.AcoesConcGmax.dataframe
 
         for supervisor in (lista_supervisores or []):
-            # monta subpasta do período
             periodo = f"{self.start_date:%Y-%m-%d}_a_{self.end_date:%Y-%m-%d}"
             pasta_out = os.path.join(supervisor.pasta, periodo)
             os.makedirs(pasta_out, exist_ok=True)
 
             planilhas = {}
 
-            # percorre pessoas associadas ao supervisor
             for pessoa in getattr(supervisor, "lista_pessoas", []) or []:
                 if not getattr(pessoa, "lista_atividades", []):
                     continue
@@ -176,13 +172,11 @@ class ControllerAcoesConcGmax:
                     }
                     df_atv = df_atv.rename(columns=columns)
 
-                    # metadados para PDF
                     df_atv.attrs["reduzir"] = list(getattr(atv, "acao_reduzir", []) or [])
                     df_atv.attrs["comparar"] = list(getattr(atv, "acao_comparar", []) or [])
                     df_atv.attrs["valor_unidade"] = float(getattr(atv, "valor_unidade", 0) or 0)
                     df_atv.attrs["unidade_pagamento"] = str(getattr(atv, "unidade_pagamento", "") or "")
 
-                    # valor a pagar
                     if atv.unidade_pagamento == "US":
                         base_us = pd.to_numeric(df_atv["US"], errors="coerce").fillna(0)
                         redu = pd.to_numeric(df_atv.get("Redução"), errors="coerce").fillna(0) if "Redução" in df_atv.columns else 0
@@ -193,23 +187,17 @@ class ControllerAcoesConcGmax:
                     dfs_por_atv.append(df_atv)
 
                 if dfs_por_atv:
-                    # PDF da pessoa dentro da pasta do supervisor/período
                     Utils._exportar_pdf_pessoa(pessoa, dfs_por_atv, self.start_date, self.end_date, pasta_out=pasta_out)
-                    # sheet dessa pessoa para o Excel do supervisor
                     planilhas[pessoa.nome] = Utils._unir_dfs_para_excel(dfs_por_atv)
 
-            # Excel do supervisor (uma aba por pessoa do supervisor)
             if planilhas:
                 Utils._exportar_xlsx(planilhas, self.start_date, self.end_date, pasta_out=pasta_out)
 
         return "Relação por supervisor exportada com sucesso."
 
-# ControllerAcoesConcGmax.py
-
     def gerar_pagamento_metas(self, lista_supervisores=None):
         df_src = self.AcoesConcGmax.dataframe
 
-        # Mapa: matricula da pessoa -> [supervisores]
         mapa_pessoa_sup = {}
         if lista_supervisores:
             for supervisor in (lista_supervisores or []):
@@ -223,7 +211,6 @@ class ControllerAcoesConcGmax:
             if meta is None:
                 continue
 
-            # Filtra ações da meta para a pessoa
             df_pessoa = df_src[
                 (df_src["USUARIOS_NOM"].eq(pessoa.nome)) &
                 (df_src["TACOES_DES"].isin(meta.acoes))
@@ -232,11 +219,9 @@ class ControllerAcoesConcGmax:
             if df_pessoa.empty:
                 continue
 
-            # DataFrame de detalhamento da produção (por extenso)
             cols_base = ["NOTAS_NUM_NS", "TSERVICOS_CT_COD", "TACOES_DES", "ACOES_DAT_CONCLUSAO"]
             cols_extra = []
 
-            # Se a unidade da meta for US, utilizamos as colunas de US configuradas na meta
             for col in getattr(meta, "colunas_us", []) or []:
                 if col in df_pessoa.columns:
                     cols_extra.append(col)
@@ -251,9 +236,7 @@ class ControllerAcoesConcGmax:
             }
             df_detalhe = df_detalhe.rename(columns=rename_cols)
 
-            # Produção em função da unidade da meta
             if meta.unidade == "NS":
-                # quantidade de registros (cada ação nas ações da meta)
                 producao_total = float(len(df_pessoa))
             elif meta.unidade == "US":
                 producao_total = 0.0
@@ -265,13 +248,10 @@ class ControllerAcoesConcGmax:
                             .sum()
                         )
             else:
-                # Unidade inválida (não deve acontecer, é validada em Meta)
                 continue
 
-            # Calcula valor a pagar conforme forma de pagamento
             valor_pagamento = meta.calcular_pagamento(producao_total)
 
-            # 1) PDF geral na pasta padrão
             Utils._exportar_pdf_meta(
                 pessoa,
                 meta,
@@ -283,7 +263,6 @@ class ControllerAcoesConcGmax:
                 pasta_out=".\\exported_data"
             )
 
-            # 2) PDF na(s) pasta(s) do(s) supervisor(es) da pessoa, por período
             mat = getattr(pessoa, "matricula", None)
             supervisores_pessoa = mapa_pessoa_sup.get(mat, [])
             for supervisor in supervisores_pessoa:

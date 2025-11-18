@@ -166,12 +166,12 @@ class ControllerSupervisor:
         def _key(p):
             return (p.nome, p.matricula, p.chave_pix, p.email)
 
-        mapa = {_key(p): p for p in self.lista_pessoas}  # master
+        mapa = {_key(p): p for p in self.lista_pessoas}
 
         for sup in self.lista_supervisores:
             novas = []
             for p in sup.lista_pessoas:
                 ref = mapa.get(_key(p))
-                if ref is not None:  # mantém só quem existe no master
+                if ref is not None:
                     novas.append(ref)
             sup.lista_pessoas = novas

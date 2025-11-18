@@ -91,10 +91,6 @@ class Meta:
         return ["Fixo", "Excedente", "Fixo+Excedente", "ProducaoTotal"]
 
     def calcular_pagamento(self, producao: float) -> float:
-        """
-        Calcula o valor a pagar dado a produção na unidade da meta.
-        Só paga se a produção atingiu a meta.
-        """
         if producao is None:
             return 0.0
 

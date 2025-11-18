@@ -1,6 +1,4 @@
-﻿# main.py
-
-import traceback
+﻿import traceback
 from datetime import datetime
 from Controller import ControllerAtividade, ControllerPessoa, ControllerSupervisor
 from Controller.ControllerAcoesConcGmax import ControllerAcoesConcGmax
@@ -120,7 +118,6 @@ while True:
                     raise ValueError("Data de início deve ser anterior à data final.")
 
                 controller_acoes_conc_gmax = ControllerAcoesConcGmax(controller_pessoas.lista_pessoas, start_date, end_date)
-                # AGORA: metas também geradas nas pastas dos supervisores (por período)
                 print(controller_acoes_conc_gmax.gerar_pagamento_metas(controller_supervisores.lista_supervisores))
 
             case 5:
