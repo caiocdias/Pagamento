@@ -170,7 +170,7 @@ class ControllerPessoa:
                         raise ValueError("Não há mais atividades cadastradas nesta pessoa.")
                         break
                     while True:
-                        atividade_para_remover = MenuSimples("Selecione a atividade para remover", [str(atv) for atv in self.lista_pessoas[pessoa_selecionada].lista_atividades]).choose(include_exit=False)
+                        atividade_para_remover = MenuSimples("Selecione a atividade para remover", [str(atv) for atv in self.lista_pessoas[pessoa_selecionada].lista_atividades]).choose(include_exit=True)
 
                         if atividade_para_remover is None:
                             break
